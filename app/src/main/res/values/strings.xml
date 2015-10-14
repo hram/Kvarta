@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">Water</string>
+    
+    <!-- Strings related to login -->
+    <string name="prompt_tsg">Рег. номер ТСЖ/УК</string>
+    <string name="prompt_account">Номер лицевого счета</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="title_activity_main">Ввод показаний счетчиков</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_reload">Reload</string>
+    <string name="ac_label_login">Вход для жильцов</string>
+    <string name="error_invalid_account_id">This account is incorrect</string>
+    <string name="permission_inernet">"Для работы приложеию необходим доступ в интернет."</string>
+    <string name="bt_save">Сохранить</string>
+    <string name="remind">Сохранить и напомнить %1s</string>
+    <string name="notification">Необходимо подать показания воды</string>
+    <string name="action_logout">Log out</string>
+    <string name="last_value">last value %1s</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <!-- Отображать информацию о пользователе -->
+    <string name="pref_title_enable_user_info">Show user info</string>
+    <string name="pref_description_enable_user_info">Show user info on main screen header</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_enable_remind">Напоминать</string>
+    <string name="pref_description_enable_remind">Напоминать о небходимости сдать показания счетчиков</string>
+
+    <string name="pref_title_manual_data">Установить дату вручную</string>
+    <string name="pref_description_manual_data">Если дата не заданна то напоминание произойдет через 30 дней после последнего показания</string>
+
+    <string name="pref_title_date">Указать число</string>
+    <string name="pref_description_date">Напоминать %1s-го числа каждого месяца</string>
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="permission_camera">Для работы фонарика необходим доступ к камере.</string>
+    <string name="camera_not_found">Для работы фонарика необходима камера. Камера не найдена. Если она есть попробуйте пересапустить устройство.</string>
+    <string name="camera_open_error">Ошибка включения фонарика</string>
+    <string name="camera_close_error">Ошибка отключения фонарика</string>
+</resources>

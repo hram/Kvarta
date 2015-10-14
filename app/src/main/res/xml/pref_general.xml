@@ -1,0 +1,9 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="pref_enable_user_info"
+        android:title="@string/pref_title_enable_user_info"
+        android:summary="@string/pref_description_enable_user_info"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

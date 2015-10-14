@@ -1,0 +1,17 @@
+package hram.kvarta;
+
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
+
+/**
+ * @author Evgeny Hramov
+ */
+public class InterceptorWin1251 implements Interceptor {
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Response originalResponse = chain.proceed(chain.request());
+        return originalResponse.newBuilder().header("Content-Type", "text/html;charset=windows-1251").build();
+    }
+}
