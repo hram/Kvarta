@@ -32,16 +32,17 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
-import droidkit.annotation.InjectView;
-import droidkit.annotation.OnClick;
-import droidkit.content.TypedPrefs;
-import io.fabric.sdk.android.Fabric;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+
+import droidkit.annotation.InjectView;
+import droidkit.annotation.OnClick;
+import droidkit.content.TypedPrefs;
+import io.fabric.sdk.android.Fabric;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -525,7 +526,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                 coldValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
             } catch (NumberFormatException nfe) {
                 coldValues[index] = -1;
-                //Log.d(TAG, "Cold valie " + index + " error");
             }
         }
 
@@ -534,7 +534,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                 hotValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
             } catch (NumberFormatException nfe) {
                 hotValues[index] = -1;
-                //Log.d(TAG, "Hot valie " + index + " error");
             }
         }
 

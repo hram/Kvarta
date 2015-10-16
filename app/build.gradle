@@ -19,9 +19,9 @@ def getProps(String propName) {
     if (propsFile.exists()) {
         def props = new Properties()
         props.load(new FileInputStream(propsFile))
-        return props[propName]
+        return props[propName] != null ? props[propName] : "\"define config field: " + propName + "\""
     } else {
-        return "define config field: " + propName;
+        return "\"define config file local.properties\"";
     }
 }
 
