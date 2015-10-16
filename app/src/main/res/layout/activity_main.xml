@@ -67,7 +67,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="8dp">
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp">
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
@@ -76,7 +77,8 @@
                     android:layout_above="@+id/textView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="8dp"
-                    app:typeface="roboto_condensed_light"/>
+                    app:typeface="roboto_condensed_light"
+                    tools:ignore="HardcodedText"/>
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:id="@+id/textView"
@@ -85,7 +87,8 @@
                     android:text="В"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    app:typeface="roboto_condensed_light"/>
+                    app:typeface="roboto_condensed_light"
+                    tools:ignore="HardcodedText"/>
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
@@ -94,7 +97,8 @@
                     android:layout_below="@+id/textView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    app:typeface="roboto_condensed_light"/>
+                    app:typeface="roboto_condensed_light"
+                    tools:ignore="HardcodedText"/>
 
             </RelativeLayout>
 
@@ -147,7 +151,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="8dp">
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp">
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
@@ -156,7 +161,8 @@
                     android:layout_above="@+id/textView2"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="8dp"
-                    app:typeface="roboto_condensed_light"/>
+                    app:typeface="roboto_condensed_light"
+                    tools:ignore="HardcodedText"/>
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:id="@+id/textView2"
@@ -165,7 +171,8 @@
                     android:text="В"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    app:typeface="roboto_condensed_light"/>
+                    app:typeface="roboto_condensed_light"
+                    tools:ignore="HardcodedText"/>
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
@@ -174,7 +181,8 @@
                     android:layout_below="@+id/textView2"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
-                    app:typeface="roboto_condensed_light"/>
+                    app:typeface="roboto_condensed_light"
+                    tools:ignore="HardcodedText"/>
 
             </RelativeLayout>
 

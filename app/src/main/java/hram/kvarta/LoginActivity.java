@@ -104,20 +104,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //DroidKit.onResume(this);
-    }
-
-    @Override
-    public void onPause() {
-        //DroidKit.onPause(this);
-        super.onPause();
-    }
-
     @OnClick(R.id.sign_in_button)
-    public void onEmailSignInButtonClick(View v) {
+    public void onEmailSignInButtonClick() {
         attemptLogin();
     }
 

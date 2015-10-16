@@ -77,7 +77,7 @@ public class PersistentCookieStore implements CookieStore {
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.putString(uri.getHost(), TextUtils.join(",", cookies.get(uri.getHost()).keySet()));
         prefsWriter.putString(COOKIE_NAME_PREFIX + name, encodeCookie(new SerializableHttpCookie(cookie)));
-        prefsWriter.commit();
+        prefsWriter.apply();
     }
 
     protected String getCookieToken(URI uri, HttpCookie cookie) {
@@ -96,7 +96,7 @@ public class PersistentCookieStore implements CookieStore {
     public boolean removeAll() {
         SharedPreferences.Editor prefsWriter = cookiePrefs.edit();
         prefsWriter.clear();
-        prefsWriter.commit();
+        prefsWriter.apply();
         cookies.clear();
         return true;
     }
@@ -114,7 +114,7 @@ public class PersistentCookieStore implements CookieStore {
                 prefsWriter.remove(COOKIE_NAME_PREFIX + name);
             }
             prefsWriter.putString(uri.getHost(), TextUtils.join(",", cookies.get(uri.getHost()).keySet()));
-            prefsWriter.commit();
+            prefsWriter.apply();
 
             return true;
         } else {

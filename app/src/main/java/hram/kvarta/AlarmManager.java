@@ -11,7 +11,7 @@ import droidkit.content.TypedPrefs;
 /**
  * @author Evgeny Hramov
  */
-public class AlarmManager {
+class AlarmManager {
     //private final static String TAG = "kvarta";
 
     public static void setAlarm(Context context) {
@@ -20,7 +20,7 @@ public class AlarmManager {
         final Intent intent = new Intent(context, AlarmService.class);
 
         if(settings.enableRemind().get()) {
-            Calendar calendar = getAlarDate(settings);
+            Calendar calendar = getAlarmDate(settings);
             //SimpleDateFormat format = new SimpleDateFormat("dd.MM hh.mm");
             //Log.d(TAG, "New time " + format.format(calendar.getTime()));
 
@@ -30,7 +30,7 @@ public class AlarmManager {
         }
     }
 
-    public static Calendar getAlarDate(Settings settings){
+    private static Calendar getAlarmDate(Settings settings){
         Calendar calendar = Calendar.getInstance();
         if(calendar.get(Calendar.DAY_OF_MONTH) >= settings.remindDate().get()){
             calendar.add(Calendar.MONTH, 1);

@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     }
 
     @OnClick(R.id.flash)
-    public void onFlashViewClick(View v) {
+    public void onFlashViewClick() {
         if (mayCreateCamera()) {
             cameraOnOff();
         }
@@ -400,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     }
 
     @OnClick(R.id.action_save)
-    public void onActionSaveClick(View v) {
+    public void onActionSaveClick() {
         startSaveTask();
     }
 
@@ -452,15 +452,14 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_CAMERA: {
+            case REQUEST_CAMERA:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     cameraOnOff();
                 } else {
                     mFlash.setVisibility(View.GONE);
                 }
-                return;
-            }
+                break;
         }
 
     }
@@ -643,7 +642,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                 coldValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
             } catch (NumberFormatException nfe) {
                 coldValues[index] = -1;
-                //Log.d(TAG, "Cold valie " + index + " error");
             }
         }
 
@@ -652,7 +650,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                 hotValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
             } catch (NumberFormatException nfe) {
                 hotValues[index] = -1;
-                //Log.d(TAG, "Hot valie " + index + " error");
             }
         }
 

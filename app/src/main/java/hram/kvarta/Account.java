@@ -65,7 +65,7 @@ public class Account {
         mSettings = TypedPrefs.from(context, Settings.class);
     }
 
-    public Account(Context context, Builder builder) {
+    private Account(Context context, Builder builder) {
         this(context);
 
         mSettings.tsgId().set(builder.mTsgId);

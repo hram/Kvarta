@@ -29,7 +29,6 @@ public class AlarmService extends IntentService {
 
     private void showNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(getString(R.string.app_name))
