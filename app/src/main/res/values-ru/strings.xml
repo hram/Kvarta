@@ -10,7 +10,7 @@
     <string name="action_sign_in">Войти</string>
     <string name="action_sign_in_short">Войти</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_account_id">Не верный номер. Должно быть 4 цифры.</string>
+    <string name="error_invalid_account_id">Неверный номер. Должно быть 4 цифры.</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">Обязательное поле</string>
