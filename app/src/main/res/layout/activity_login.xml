@@ -2,6 +2,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/activity_vertical_margin"
@@ -42,14 +43,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <com.devspark.robototextview.widget.RobotoEditText
                     android:id="@+id/tsgid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_tsg"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    app:typeface="roboto_condensed_regular"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -57,14 +59,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <com.devspark.robototextview.widget.RobotoEditText
                     android:id="@+id/accountid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_account"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    app:typeface="roboto_condensed_regular"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -72,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <com.devspark.robototextview.widget.RobotoEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -82,18 +85,36 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    app:typeface="roboto_condensed_regular"/>
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold"/>
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal">
+
+                <com.devspark.robototextview.widget.RobotoButton
+                        android:id="@+id/sign_in_button_demo"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/action_sign_in_demo"
+                        app:typeface="roboto_condensed_regular"
+                        android:background="?android:attr/selectableItemBackground"/>
+
+                <com.devspark.robototextview.widget.RobotoButton
+                        android:id="@+id/sign_in_button"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/action_sign_in"
+                        app:typeface="roboto_condensed_regular"
+                        android:background="?android:attr/selectableItemBackground"/>
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

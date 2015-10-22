@@ -136,6 +136,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // current value.
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getInt(preference.getKey(), 26));
     }
+
     /**
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
@@ -172,7 +173,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
 
-            bindPreferenceSummaryToValue(findPreference("pref_remind_date"));
+            bindPreferenceSummaryToValue(findPreference("remindDate"));
         }
     }
 }

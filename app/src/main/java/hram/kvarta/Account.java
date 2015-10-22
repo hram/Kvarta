@@ -71,6 +71,7 @@ public class Account {
         mSettings.tsgId().set(builder.mTsgId);
         mSettings.accountId().set(builder.mAccountId);
         mSettings.password().set(builder.mPassword);
+        mSettings.demo().set(builder.mDemo);
     }
 
     public boolean isValid() {
@@ -87,6 +88,7 @@ public class Account {
         private String mTsgId;
         private String mAccountId;
         private String mPassword;
+        private boolean mDemo;
 
         public Builder() {
         }
@@ -106,6 +108,11 @@ public class Account {
         public Builder password(String password) {
             if (password == null) throw new IllegalArgumentException("password == null");
             mPassword = password;
+            return this;
+        }
+
+        public Builder demo(boolean demo) {
+            mDemo = demo;
             return this;
         }
 

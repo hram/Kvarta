@@ -39,4 +39,5 @@
     <string name="camera_not_found">Для работы фонарика необходима камера. Камера не найдена. Если она есть попробуйте пересапустить устройство.</string>
     <string name="camera_open_error">Ошибка включения фонарика</string>
     <string name="camera_close_error">Ошибка отключения фонарика</string>
+    <string name="action_sign_in_demo">Демо</string>
 </resources>

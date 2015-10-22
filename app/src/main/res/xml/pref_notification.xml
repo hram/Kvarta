@@ -1,41 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- A 'parent' preference, which enables/disables child preferences (below)
-         when checked/unchecked. -->
     <SwitchPreference
-        android:key="pref_remind_enable"
+        android:key="enableRemind"
         android:title="@string/pref_title_enable_remind"
         android:summary="@string/pref_description_enable_remind"
         android:defaultValue="true" />
-
-    <!--
-    <SwitchPreference
-        android:key="pref_manual_date"
-        android:title="@string/pref_title_manual_data"
-        android:summary="@string/pref_description_manual_data"
-        android:defaultValue="false"
-        android:dependency="pref_enable_remind"/>
-    -->
     <hram.kvarta.NumberPickerPreference
-        android:key="pref_remind_date"
+        android:key="remindDate"
         android:title="@string/pref_title_date"
         android:defaultValue="26"
-        android:dependency="pref_remind_enable"/>
-
-    <!-- Allows the user to choose a ringtone in the 'notification' category.
-    <RingtonePreference
-        android:dependency="notifications_new_message"
-        android:key="notifications_new_message_ringtone"
-        android:title="@string/pref_title_ringtone"
-        android:ringtoneType="notification"
-        android:defaultValue="content://settings/system/notification_sound" />
-    -->
-    <!-- NOTE: This preference will be enabled only when the checkbox above is checked.
-    <SwitchPreference
-        android:dependency="notifications_new_message"
-        android:key="notifications_new_message_vibrate"
-        android:title="@string/pref_title_vibrate"
-        android:defaultValue="true" />
-    -->
-
+        android:dependency="enableRemind"/>
 </PreferenceScreen>

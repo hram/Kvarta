@@ -19,6 +19,9 @@ public interface Settings {
     StringValue password();
 
     @Value
+    BoolValue demo();
+
+    @Value
     StringValue address();
 
     @Value

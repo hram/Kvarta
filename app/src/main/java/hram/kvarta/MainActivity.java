@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        //DroidKit.inject(this, this);
+        TypedPrefs.setupDefaults(this, Settings.class);
 
         initNumberPicker(mNPC1);
         initNumberPicker(mNPC2);
@@ -171,6 +171,10 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
 
         AlarmManager.setAlarm(getApplicationContext());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mFlash.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -362,20 +366,20 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     private void cameraOnOff() {
         if (mCamera == null) {
-            try {
+            //try {
                 mCamera = Camera.open();
                 mCamera.startPreview();
                 Camera.Parameters parameters = mCamera.getParameters();
                 parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                 mCamera.setParameters(parameters);
                 mFlash.setImageResource(R.drawable.flash_on);
-            } catch (java.lang.NullPointerException e) {
-                showSnackbar(getString(R.string.camera_not_found));
-            } catch (Exception e) {
-                showSnackbar(getString(R.string.camera_open_error));
-            }
+            //} catch (java.lang.NullPointerException e) {
+            //    showSnackbar(getString(R.string.camera_not_found));
+            //} catch (Exception e) {
+            //    showSnackbar(getString(R.string.camera_open_error));
+            //}
         } else {
-            try {
+            //try {
                 Camera.Parameters parameters = mCamera.getParameters();
                 parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                 mCamera.setParameters(parameters);
@@ -383,10 +387,9 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                 mCamera.release();
                 mCamera = null;
                 mFlash.setImageResource(R.drawable.flash_off);
-            } catch (Exception e) {
-                showSnackbar(getString(R.string.camera_close_error));
-            }
-
+            //} catch (Exception e) {
+            //    showSnackbar(getString(R.string.camera_close_error));
+            //}
         }
     }
 

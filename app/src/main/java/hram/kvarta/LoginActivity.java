@@ -99,14 +99,19 @@ public class LoginActivity extends AppCompatActivity {
             mPasswordView.setText(account.getPassword());
         }
 
-        if(getIntent().getExtras() != null) {
+        if (getIntent().getExtras() != null) {
             mArgs = TypedBundle.from(getIntent().getExtras(), LoginActivity.Args.class);
         }
     }
 
     @OnClick(R.id.sign_in_button)
-    public void onEmailSignInButtonClick() {
+    public void onSignInButtonClick() {
         attemptLogin();
+    }
+
+    @OnClick(R.id.sign_in_button_demo)
+    public void onSignInDemoButtonClick() {
+        attemptLoginDemo();
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -209,6 +214,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void attemptLoginDemo() {
+        showProgress(true);
+        mAuthTask = new UserLoginTask();
+        mAuthTask.execute((Void) null);
+    }
+
     private boolean isAccountIdValid(String accountId) {
         return accountId.length() == 9;
     }
@@ -258,18 +269,27 @@ public class LoginActivity extends AppCompatActivity {
         private final String mTsgID;
         private final String mAccountID;
         private final String mPassword;
+        private final boolean mDemo;
 
         OkHttpClient client = OkClient.create(getApplicationContext());
+
+        UserLoginTask() {
+            mTsgID = "000000000";
+            mAccountID = "000000000";
+            mPassword = "демо";
+            mDemo = true;
+        }
 
         UserLoginTask(String tsgID, String accountID, String password) {
             mTsgID = tsgID;
             mAccountID = accountID;
             mPassword = password;
+            mDemo = false;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            if(mArgs != null && mArgs.toMockNetwork().get()){
+            if (mArgs != null && mArgs.toMockNetwork().get()) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -288,14 +308,27 @@ public class LoginActivity extends AppCompatActivity {
                 if (!respString.contains("form_tenant"))
                     throw new IOException();
 
-                RequestBody formBody = new FormEncodingBuilder()
-                        .add("action", "login")
-                        .add("subaction", "enter")
-                        .add("usertype", "tenant")
-                        .add("tsgid", mTsgID)
-                        .add("accountid", mAccountID)
-                        .add("password", mPassword)
-                        .build();
+                RequestBody formBody;
+                if (!mDemo) {
+                    formBody = new FormEncodingBuilder()
+                            .add("action", "login")
+                            .add("subaction", "enter")
+                            .add("usertype", "tenant")
+                            .add("tsgid", mTsgID)
+                            .add("accountid", mAccountID)
+                            .add("password", mPassword)
+                            .build();
+                } else {
+                    // "", "000000000", "демо"
+                    formBody = new FormEncodingBuilder()
+                            .add("action", "login")
+                            .add("subaction", "enter")
+                            .add("usertype", "tenant")
+                            .add("tsgid", "")
+                            .add("accountid", "000000000")
+                            .addEncoded("password", "%E4%E5%EC%EE")
+                            .build();
+                }
 
                 request = new Request.Builder()
                         .url("http://www2.kvarta-c.ru/voda.php")
@@ -337,7 +370,9 @@ public class LoginActivity extends AppCompatActivity {
                 new Account.Builder()
                         .accountId(mAccountID)
                         .tsgId(mTsgID)
-                        .password(mPassword).build(getApplicationContext());
+                        .password(mPassword)
+                        .demo(mDemo)
+                        .build(getApplicationContext());
                 setResult(RESULT_OK);
                 finish();
             } else {
