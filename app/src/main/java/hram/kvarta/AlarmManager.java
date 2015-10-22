@@ -40,4 +40,10 @@ class AlarmManager {
         calendar.set(Calendar.MINUTE, 0);
         return calendar;
     }
+
+    private static Calendar getAlarmDateTest(Settings settings){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 1);
+        return calendar;
+    }
 }
