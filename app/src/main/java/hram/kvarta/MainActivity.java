@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     ImageView mFlash;
 
     @InjectView(R.id.action_save)
-    com.getbase.floatingactionbutton.FloatingActionButton mActionSave;
+    View mActionSave;
 
     private final long[] hotValues = new long[4];
     private final long[] coldValues = new long[4];
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             getInfo();
         } else {
             displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), savedInstanceState.getString("current_hot_value"), savedInstanceState.getString("current_cold_value"));
+            showActionMenu(savedInstanceState.getBoolean("action_save_shown"));
         }
     }
 
@@ -205,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         if (!TextUtils.isEmpty(mCurrentColdValue) && !TextUtils.isEmpty(mCurrentHotValue)) {
             outState.putString("current_cold_value", mCurrentColdValue);
             outState.putString("current_hot_value", mCurrentHotValue);
+            outState.putBoolean("action_save_shown", mActionSave.getVisibility() == View.VISIBLE);
         }
     }
 
@@ -310,9 +312,35 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         }
     }
 
+    /**
+     * Сбрасывает все значения в 0
+     */
+    private void resetValues(){
+        mNPH1.setValue(0);
+        mNPH2.setValue(0);
+        mNPH3.setValue(0);
+        mNPH4.setValue(0);
+        mNPH5.setValue(0);
+
+        mNPC1.setValue(0);
+        mNPC2.setValue(0);
+        mNPC3.setValue(0);
+        mNPC4.setValue(0);
+        mNPC5.setValue(0);
+    }
+
+    /**
+     * Отоплажает текущае значения
+     * @param address
+     * @param userInfo
+     * @param currentHotValue
+     * @param currentColdValue
+     */
     private void displayCurrentState(String address, String userInfo, String currentHotValue, String currentColdValue) {
         mAddress.setText(address);
         mUserInfo.setText(userInfo);
+
+        resetValues();
 
         mCurrentHotValue = currentHotValue;
         for (int i = 0; i < mCurrentHotValue.length(); i++) {
@@ -464,7 +492,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                 }
                 break;
         }
-
     }
 
     public class GetInfoTask extends AsyncTask<Void, Void, Boolean> {
