@@ -37,6 +37,14 @@ public class Account {
         mSettings.password().set(password);
     }
 
+    public boolean isDemo() {
+        return mSettings.demo().get();
+    }
+
+    public void setDemo(boolean demo) {
+        mSettings.demo().set(demo);
+    }
+
     public String getAddress() {
         return mSettings.address().get();
     }

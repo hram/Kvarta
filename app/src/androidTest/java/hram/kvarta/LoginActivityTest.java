@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -34,9 +35,8 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
@@ -50,34 +50,34 @@ import static org.hamcrest.Matchers.notNullValue;
 @LargeTest
 public class LoginActivityTest {
 
-    private static final String TAG = "UI Tests!";
+    private static final String TAG = "UIT";
     SharedPreferences mPreferences;
     Account mAccount;
 
     @Rule
-    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class);
+    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class, true, false);
 
     @Before
     public void setUp() {
-        Log.d(TAG, "Test was set up!");
+        Log.v(TAG, "Test was set up!");
 
         assertThat(InstrumentationRegistry.getContext(), is(notNullValue()));
         assertThat(InstrumentationRegistry.getTargetContext(), is(notNullValue()));
 
         mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         mAccount = new Account(getContext());
+        mAccount.reset();
     }
 
     @After
     public void tearDown() {
-        Log.d(TAG, "Test was torn down!");
+        Log.v(TAG, "Test was torn down!");
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-
+        Log.v(TAG, "set up class!");
         //PinAFoodApp.useMocks = true;
-
     }
 
     /**
@@ -91,11 +91,8 @@ public class LoginActivityTest {
     @Test
     public void testErrorMessage() {
         //mActivityRule.getActivity();
-        Intent intent = new Intent();
-        LoginActivity.Args args = TypedBundle.from(intent.getExtras(), LoginActivity.Args.class);
-        args.toMockNetwork().set(true);
-        args.networkResult().set(true);
-        mActivityRule.launchActivity(intent);
+
+        mActivityRule.launchActivity(createIntent(true, true, true));
 
         onView(withId(R.id.tsgid)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.sign_in_button)).perform(click());
@@ -113,31 +110,33 @@ public class LoginActivityTest {
     @Test
     public void testLoadDataFromSettings() {
 
+        Intents.init();
+
         mAccount.setTsgId(BuildConfig.tsgid);
         mAccount.setAccountId(BuildConfig.accountid);
         mAccount.setPassword(BuildConfig.password);
 
-        Bundle bundle = new Bundle();
-        LoginActivity.Args args = TypedBundle.from(bundle, LoginActivity.Args.class);
-        args.toMockNetwork().set(true);
-        args.networkResult().set(true);
-
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        mActivityRule.launchActivity(intent);
-
-        Intent resultData = new Intent();
-        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
-        intending(toPackage("hram.kvarta")).respondWith(result);
+        mActivityRule.launchActivity(createIntent(true, false, true));
 
         // Type text and then press the button.
         onView(withId(R.id.tsgid)).check(matches(withText(BuildConfig.tsgid)));
         onView(withId(R.id.accountid)).check(matches(withText(BuildConfig.accountid)));
-        onView(withId(R.id.password)).check(matches(withText(BuildConfig.password)));
+        onView(withId(R.id.password)).check(matches(withText(BuildConfig.password))).perform(closeSoftKeyboard());
+
         onView(withId(R.id.sign_in_button)).perform(click());
 
+        // пока не получается проверить так как идет прогресс и операция считаетс яне завершенной
+        // https://groups.google.com/forum/#!searchin/android-test-kit-discuss/Volley/android-test-kit-discuss/RBzGo5nDgwI/bKCwZLkviSUJ
+        // возможное решение http://blog.sqisland.com/2015/04/espresso-custom-idling-resource.html
         //onView(withId(R.id.layout_progress)).check(matches(isDisplayed()));
-        onView(isRoot()).perform(CustomViewActions.waitForMatch(withId(R.id.layout_progress), 1000));
+        //onView(isRoot()).perform(CustomViewActions.waitId(R.id.layout_progress, 1000));
+
+        // пока не работает всегда RESULT_OK
+        Intent resultData = new Intent();
+        Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
+        intending(hasComponent(LoginActivity.class.getName())).respondWith(result);
+
+        Intents.release();
     }
 
     //@Test
@@ -178,6 +177,18 @@ public class LoginActivityTest {
 
     }
 */
+    private Intent createIntent(boolean toMockNetwork, boolean networkResult, boolean switchOffAnimations){
+        Bundle bundle = new Bundle();
+        LoginActivity.Args args = TypedBundle.from(bundle, LoginActivity.Args.class);
+        args.toMockNetwork().set(toMockNetwork);
+        args.networkResult().set(networkResult);
+        args.switchOffAnimations().set(switchOffAnimations);
+
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     private static Matcher<View> withError(final int expectedResourceId) {
         return new TypeSafeMatcher<View>() {
 

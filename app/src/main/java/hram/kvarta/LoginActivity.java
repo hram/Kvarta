@@ -19,20 +19,14 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
-import java.io.IOException;
 
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.BoolValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.Value;
+import hram.kvarta.network.AccountManager;
 
 import static android.Manifest.permission.INTERNET;
 
@@ -79,8 +73,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //DroidKit.inject(this, this);
-
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -101,6 +93,9 @@ public class LoginActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             mArgs = TypedBundle.from(getIntent().getExtras(), LoginActivity.Args.class);
+        }
+        else {
+            mArgs = TypedBundle.from(new Bundle(), LoginActivity.Args.class);
         }
     }
 
@@ -209,7 +204,7 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(tsgId, accountId, password);
+            mAuthTask = new UserLoginTask(tsgId, accountId, password, false);
             mAuthTask.execute((Void) null);
         }
     }
@@ -232,7 +227,7 @@ public class LoginActivity extends AppCompatActivity {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (!mArgs.switchOffAnimations().get() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -272,93 +267,32 @@ public class LoginActivity extends AppCompatActivity {
         private final boolean mDemo;
 
         OkHttpClient client = OkClient.create(getApplicationContext());
+        AccountManager mAccountManager;
 
         UserLoginTask() {
-            mTsgID = "000000000";
-            mAccountID = "000000000";
-            mPassword = "демо";
-            mDemo = true;
+            this("000000000", "000000000", "демо", true);
         }
 
-        UserLoginTask(String tsgID, String accountID, String password) {
+        UserLoginTask(String tsgID, String accountID, String password, boolean demo) {
             mTsgID = tsgID;
             mAccountID = accountID;
             mPassword = password;
-            mDemo = false;
+            mDemo = demo;
+
+            mAccountManager = new AccountManager();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            if (mArgs != null && mArgs.toMockNetwork().get()) {
+            if (mArgs.toMockNetwork().get()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                 }
                 return mArgs.networkResult().get();
             }
 
-            try {
-                Request request = new Request.Builder().url("http://www2.kvarta-c.ru/voda.php?action=login").build();
-                Response response = client.newCall(request).execute();
-                if (!response.isSuccessful())
-                    throw new IOException("Unexpected code " + response);
-
-                ResponseBody body = response.body();
-                String respString = body.string();
-                if (!respString.contains("form_tenant"))
-                    throw new IOException();
-
-                RequestBody formBody;
-                if (!mDemo) {
-                    formBody = new FormEncodingBuilder()
-                            .add("action", "login")
-                            .add("subaction", "enter")
-                            .add("usertype", "tenant")
-                            .add("tsgid", mTsgID)
-                            .add("accountid", mAccountID)
-                            .add("password", mPassword)
-                            .build();
-                } else {
-                    // "", "000000000", "демо"
-                    formBody = new FormEncodingBuilder()
-                            .add("action", "login")
-                            .add("subaction", "enter")
-                            .add("usertype", "tenant")
-                            .add("tsgid", "")
-                            .add("accountid", "000000000")
-                            .addEncoded("password", "%E4%E5%EC%EE")
-                            .build();
-                }
-
-                request = new Request.Builder()
-                        .url("http://www2.kvarta-c.ru/voda.php")
-                        .post(formBody)
-                        .build();
-
-                response = client.newCall(request).execute();
-                if (!response.isSuccessful())
-                    throw new IOException("Unexpected code " + response);
-
-                body = response.body();
-                respString = body.string();
-                if (!respString.contains("Logged in. Click to continue"))
-                    throw new IOException();
-
-                request = new Request.Builder().url("http://www2.kvarta-c.ru/voda.php?action=tenant").build();
-                response = client.newCall(request).execute();
-                if (!response.isSuccessful())
-                    throw new IOException("Unexpected code " + response);
-
-                body = response.body();
-                respString = body.string();
-                if (!respString.contains("Номер лицевого счета"))
-                    throw new IOException();
-
-            } catch (IOException e) {
-                return false;
-            }
-
-            return true;
+            return mAccountManager.logIn(mTsgID, mAccountID, mPassword, mDemo);
         }
 
         @Override
@@ -394,6 +328,9 @@ public class LoginActivity extends AppCompatActivity {
 
         @Value
         BoolValue networkResult();
+
+        @Value
+        BoolValue switchOffAnimations();
     }
 }
 

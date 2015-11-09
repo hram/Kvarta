@@ -3,22 +3,17 @@ package hram.kvarta;
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.action.CoordinatesProvider;
-import android.support.test.espresso.action.GeneralClickAction;
-import android.support.test.espresso.action.Press;
-import android.support.test.espresso.action.Tap;
+import android.support.test.espresso.util.HumanReadables;
 import android.support.test.espresso.util.TreeIterables;
-import android.text.Layout;
-import android.text.SpannableString;
 import android.view.View;
-import android.widget.TextView;
 
 import org.hamcrest.Matcher;
 
-import java.security.InvalidParameterException;
 import java.util.concurrent.TimeoutException;
 
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 /**
  * Created by ellen on 4/15/15.
@@ -26,6 +21,48 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
  * This class provides application-specific ViewActions which can be used for testing.
  */
 public class CustomViewActions {
+
+    /** Perform action of waiting for a specific view id. */
+    public static ViewAction waitId(final int viewId, final long millis) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return "wait for a specific view with id <" + viewId + "> during " + millis + " millis.";
+            }
+
+            @Override
+            public void perform(final UiController uiController, final View view) {
+                uiController.loopMainThreadUntilIdle();
+                final long startTime = System.currentTimeMillis();
+                final long endTime = startTime + millis;
+                final Matcher<View> viewMatcher = withId(viewId);
+
+                do {
+                    for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
+                        // found view with required ID
+                        if (viewMatcher.matches(child)) {
+                            return;
+                        }
+                    }
+
+                    uiController.loopMainThreadForAtLeast(50);
+                }
+                while (System.currentTimeMillis() < endTime);
+
+                // timeout happens
+                throw new PerformException.Builder()
+                        .withActionDescription(this.getDescription())
+                        .withViewDescription(HumanReadables.describe(view))
+                        .withCause(new TimeoutException())
+                        .build();
+            }
+        };
+    }
 
     /**
      * A custom ViewAction which allows the system to wait for a view matching a passed in matcher

@@ -24,25 +24,12 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
-import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.TypedPrefs;
-import io.fabric.sdk.android.Fabric;
+import hram.kvarta.network.ValuesManager;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -108,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @InjectView(R.id.action_save)
     View mActionSave;
 
-    private final long[] hotValues = new long[4];
-    private final long[] coldValues = new long[4];
+    //private final long[] hotValues = new long[4];
+    //private final long[] coldValues = new long[4];
     private String mNewValueHot, mNewValueCold;
     private Camera mCamera;
     private String mCurrentHotValue;
@@ -118,10 +105,8 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-
-        TypedPrefs.setupDefaults(this, Settings.class);
 
         initNumberPicker(mNPC1);
         initNumberPicker(mNPC2);
@@ -331,10 +316,10 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     /**
      * Отоплажает текущае значения
-     * @param address
-     * @param userInfo
-     * @param currentHotValue
-     * @param currentColdValue
+     * @param address адрес пользователя
+     * @param userInfo информация о пользователе
+     * @param currentHotValue новые значения хорячей воды
+     * @param currentColdValue новые значения ходолной воды
      */
     private void displayCurrentState(String address, String userInfo, String currentHotValue, String currentColdValue) {
         mAddress.setText(address);
@@ -497,73 +482,14 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     public class GetInfoTask extends AsyncTask<Void, Void, Boolean> {
 
         OkHttpClient client = OkClient.create(getApplicationContext());
+        ValuesManager mValuesManager = new ValuesManager(client, mAccount);
 
         GetInfoTask() {
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            try {
-                Request request = new Request.Builder().url("http://www2.kvarta-c.ru/voda.php?action=tenant").build();
-                Response response = client.newCall(request).execute();
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                ResponseBody body = response.body();
-                Document doc = Jsoup.parse(body.string());
-
-                Elements links = doc.select("font[class=medtxt]");
-
-                Element item = links.get(1);
-                //Log.d(TAG, item.text());
-                if (!item.text().contains("Номер лицевого счета")) throw new IOException();
-
-                item = links.get(2);
-                //Log.d(TAG, item.text());
-                mAccount.setAddress(item.text());
-
-                item = links.get(3);
-                //Log.d(TAG, item.text());
-                mAccount.setUserInfo(item.text());
-
-                item = links.get(5);
-                //Log.d(TAG, item.text());
-                mAccount.setLastTime(item.text());
-
-                setColdValue(0, links.get(28).text());
-                setColdValue(1, links.get(30).text());
-                setColdValue(2, links.get(32).text());
-                setColdValue(3, links.get(34).text());
-
-                setHotValue(0, links.get(38).text());
-                setHotValue(1, links.get(40).text());
-                setHotValue(2, links.get(42).text());
-                setHotValue(3, links.get(44).text());
-
-            } catch (IOException e) {
-                return false;
-            } catch (IndexOutOfBoundsException iobe) {
-                // когда вернулись не те данные
-                return false;
-            }
-
-            return true;
-        }
-
-        private void setColdValue(int index, String value) {
-            try {
-                coldValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
-            } catch (NumberFormatException nfe) {
-                coldValues[index] = -1;
-            }
-        }
-
-        private void setHotValue(int index, String value) {
-            try {
-                hotValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
-            } catch (NumberFormatException nfe) {
-                hotValues[index] = -1;
-            }
+            return mValuesManager.getValues();
         }
 
         @Override
@@ -572,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             showProgress(false);
 
             if (success) {
-                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + hotValues[0], "" + coldValues[0]);
+                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getHotValue(0), "" + mValuesManager.getColdValue(0));
             } else {
                 LoginActivity.start(MainActivity.this);
             }
@@ -588,105 +514,20 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     public class SaveTask extends AsyncTask<Void, Void, Boolean> {
 
         OkHttpClient client = OkClient.create(getApplicationContext());
+        ValuesManager mValuesManager = new ValuesManager(client, mAccount);
 
         SaveTask() {
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            try {
-
-                RequestBody formBody = new FormEncodingBuilder()
-                        .add("action", "tenant")
-                        .add("subaction", "tenantedit")
-                        .add("service1counter1", mNewValueCold)
-                        .add("service2counter1", mNewValueHot)
-                        .add("put", "Сохранить")
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url("http://www2.kvarta-c.ru/voda.php")
-                        .post(formBody)
-                        .build();
-
-                Response response = client.newCall(request).execute();
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                ResponseBody body = response.body();
-                String respString = body.string();
-                if (!respString.contains("Data is updated."))
-                    throw new IOException();
-
-                Document doc = Jsoup.parse(respString);
-                Element link = doc.select("a[href]").first();
-                //Log.d(TAG, link.attr("href"));
-
-                request = new Request.Builder().url("http://www2.kvarta-c.ru/" + link.attr("href")).build();
-                response = client.newCall(request).execute();
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                body = response.body();
-                doc = Jsoup.parse(body.string());
-
-                Elements links = doc.select("font[class=medtxt]");
-
-                Element item = links.get(1);
-                //Log.d(TAG, item.text());
-                if (!item.text().contains("Номер лицевого счета")) throw new IOException();
-
-                item = links.get(2);
-                //Log.d(TAG, item.text());
-                mAccount.setAddress(item.text());
-
-                item = links.get(3);
-                //Log.d(TAG, item.text());
-                mAccount.setUserInfo(item.text());
-
-                item = links.get(5);
-                //Log.d(TAG, item.text());
-                mAccount.setLastTime(item.text());
-
-                setColdValue(0, links.get(28).text());
-                setColdValue(1, links.get(30).text());
-                setColdValue(2, links.get(32).text());
-                setColdValue(3, links.get(34).text());
-
-                setHotValue(0, links.get(38).text());
-                setHotValue(1, links.get(40).text());
-                setHotValue(2, links.get(42).text());
-                setHotValue(3, links.get(44).text());
-
-            } catch (IOException e) {
-                return false;
-            } catch (IndexOutOfBoundsException iobe) {
-                // когда вернулись не те данные
-                return false;
-            }
-
-            return true;
-        }
-
-        private void setColdValue(int index, String value) {
-            try {
-                coldValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
-            } catch (NumberFormatException nfe) {
-                coldValues[index] = -1;
-            }
-        }
-
-        private void setHotValue(int index, String value) {
-            try {
-                hotValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
-            } catch (NumberFormatException nfe) {
-                hotValues[index] = -1;
-            }
+            return mValuesManager.saveValues(mNewValueHot, mNewValueCold);
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + hotValues[0], "" + coldValues[0]);
+                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getHotValue(0), "" + mValuesManager.getColdValue(0));
             } else {
                 LoginActivity.start(MainActivity.this);
             }
