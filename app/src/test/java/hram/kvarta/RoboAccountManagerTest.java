@@ -36,7 +36,7 @@ public class RoboAccountManagerTest {
         OkHttpClient client = OkClient.create(getContext());
         assertNotNull(client);
 
-        mAccountManager = new AccountManager(client);
+        mAccountManager = new AccountManager();
         assertNotNull(mAccountManager);
     }
 

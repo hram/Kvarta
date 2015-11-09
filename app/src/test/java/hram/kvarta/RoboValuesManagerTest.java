@@ -40,7 +40,7 @@ public class RoboValuesManagerTest {
         OkHttpClient client = OkClient.create(RuntimeEnvironment.application);
         assertNotNull(client);
 
-        mAccountManager = new AccountManager(client);
+        mAccountManager = new AccountManager();
         assertNotNull(mAccountManager);
 
         assertTrue(mAccountManager.logIn(mAccount));
