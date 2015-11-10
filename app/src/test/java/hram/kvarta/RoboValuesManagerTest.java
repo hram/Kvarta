@@ -1,7 +1,5 @@
 package hram.kvarta;
 
-import com.squareup.okhttp.OkHttpClient;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,15 +35,12 @@ public class RoboValuesManagerTest {
                 .build(RuntimeEnvironment.application);
         assertNotNull(mAccount);
 
-        OkHttpClient client = OkClient.create(RuntimeEnvironment.application);
-        assertNotNull(client);
-
         mAccountManager = new AccountManager();
         assertNotNull(mAccountManager);
 
         assertTrue(mAccountManager.logIn(mAccount));
 
-        mValuesManager = new ValuesManager(client, mAccount);
+        mValuesManager = new ValuesManager(mAccount);
         assertNotNull(mValuesManager);
     }
 
