@@ -19,8 +19,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.squareup.okhttp.OkHttpClient;
-
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.BoolValue;
@@ -93,8 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             mArgs = TypedBundle.from(getIntent().getExtras(), LoginActivity.Args.class);
-        }
-        else {
+        } else {
             mArgs = TypedBundle.from(new Bundle(), LoginActivity.Args.class);
         }
     }
@@ -265,9 +262,7 @@ public class LoginActivity extends AppCompatActivity {
         private final String mAccountID;
         private final String mPassword;
         private final boolean mDemo;
-
-        OkHttpClient client = OkClient.create(getApplicationContext());
-        AccountManager mAccountManager;
+        AccountManager mAccountManager = new AccountManager();
 
         UserLoginTask() {
             this("000000000", "000000000", "демо", true);
@@ -278,8 +273,6 @@ public class LoginActivity extends AppCompatActivity {
             mAccountID = accountID;
             mPassword = password;
             mDemo = demo;
-
-            mAccountManager = new AccountManager();
         }
 
         @Override

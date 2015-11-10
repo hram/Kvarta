@@ -1,0 +1,246 @@
+HTTP/1.1 200 OK
+Vary: Accept-Encoding
+Date: Tue, 10 Nov 2015 11:01:42 GMT
+Server: LiteSpeed
+Connection: close
+X-Powered-By: PHP/5.2.9
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Content-Type: text/html
+Content-Length: 7516
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<meta http-equiv=Content-Type content="text/html;charset=windows-1251">
+<meta http-equiv="Expires" content="Mon, Mar 15 2004 08:03:42 GMT" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<HTML>
+
+<SCRIPT SRC="kvarta.js"></SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+WriteKvartaHeader('счетчики','voda.php');
+</SCRIPT>
+
+	<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+
+	<!--======================= LINE 1 ==================-->
+	<TR>
+	<TD><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0><tr><td>
+	  	<SCRIPT LANGUAGE="JavaScript">
+		WriteTitle('Ввод показаний счетчиков');
+	 	</SCRIPT>
+	</td></tr></table></TD>
+	</TR>
+
+	<!--======================= LINE 2 =================-->
+
+	<!--======================= LINE 3 =================-->
+	<TR align=left> <TD WIDTH=100% align=left><TABLE><TR>
+
+		<!--================== COLUMN 1 =================-->
+		<TD WIDTH=42% valign=top align=left><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+	
+		<tr>
+
+<td valign=top><IMG SRC="images/bug2.gif" ALT="bullet" WIDTH=11 HEIGHT=16 BORDER=0 VSPACE=2></td>
+<td valign=top><font class=HH4>Вход для жильцов</font>
+<font class="medtxt"><br><br>
+<!-- d_AddHeader0(); -->
+<TABLE cellPadding=0 width=100% border=0 cellspasing="0"><TBODY>
+<TR class=bg-gray>
+<TD>
+<TABLE cellSpacing=1 cellPadding=5 width="100%" border=0>
+<TBODY>
+<TR class=bg-white>
+<TD>
+<!-- /d_AddHeader0(); -->
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center><tr><td>
+
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center>
+			<tr>
+			<td><font class="medtxt">Номер лицевого счета:
+004 000 571</font>
+			</td>
+			<td>&nbsp; </td>
+			</tr>
+			<tr>
+			<td><font class="medtxt">ООО "ЖИЛИЩНАЯ ЭКСПЛУАТАЦИОННАЯ СЛУЖБА №3", кв.№ 571</td>
+			<td>&nbsp; </td>
+			</tr>
+			<tr>
+			<td><font class="medtxt">Храмов Е. Н.</td>
+			<td>&nbsp; </td>
+			</tr>
+
+</table>
+</td></tr>
+
+</table>
+<!-- d_AddFooter(); -->
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+</TD></TR></TBODY>
+</TABLE>
+<!-- /d_AddFooter(); -->
+
+</td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		</table>
+		</TD> 
+
+		<!--================== COLUMN 2 =================-->
+		<TD WIDTH=6%>&nbsp;&nbsp;&nbsp;&nbsp;</TD> 
+
+		<!--================== COLUMN 3 =================-->
+		<TD WIDTH=42% valign=top align=left><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+
+		<tr>
+<!-- WriteReference() -->
+<td>
+<font class="medtxt"><br><br><br>
+<font class="medtxt">
+Старые (предыдущие) показания от <font color=555555><b>27.10.2015</b></font><br>
+</td><td>&nbsp; &nbsp;</td>
+<!-- /WriteReference() -->
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		</table>
+		</TD> 
+		<!--================== END OF COLUMNS =================-->
+
+		</TR></TABLE></TD>
+
+	</TR>
+	<!--======================= LINE 4 =================-->
+	<TR>
+	<TD><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0><tr><td>
+<!-- WriteInputs() -->
+<form action="/voda.php" method="post">
+<input type="hidden" name="action" value="tenant" />
+<input type="hidden" name="subaction" value="tenantedit" />
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center align=left>
+<tr>
+<td><font class="medtxt">&nbsp;&nbsp;</td>
+<td><font class="medtxt">&nbsp;</td>
+<td align=right><font class="medtxt" color=555555><b>Показания</td>
+<td align=left> <font class="medtxt" color=555555><b>1-го счетчика</td>
+<td align=right><font class="medtxt" color=555555><b>Показания</td>
+<td align=left> <font class="medtxt" color=555555><b>2-го счетчика</td>
+<td align=right><font class="medtxt" color=555555><b>Показания</td>
+<td align=left> <font class="medtxt" color=555555><b>3-го счетчика</td>
+<td align=right><font class="medtxt" color=555555><b>Показания</td>
+<td align=left> <font class="medtxt" color=555555><b>4-го счетчика</td></b>
+</tr>
+<tr>
+<td><font class="medtxt">&nbsp;&nbsp;</td>
+<td><font class="medtxt">&nbsp;</td>
+<td align=right><font class="medtxt" color=555555>старые&nbsp</td>
+<td align=left> <font class="medtxt" color=555555>новые</td>
+<td align=right><font class="medtxt" color=555555>старые&nbsp</td>
+<td align=left> <font class="medtxt" color=555555>новые</td>
+<td align=right><font class="medtxt" color=555555>старые&nbsp</td>
+<td align=left> <font class="medtxt" color=555555>новые</td>
+<td align=right><font class="medtxt" color=555555>старые&nbsp</td>
+<td align=left> <font class="medtxt" color=555555>новые</td>
+</tr>
+<tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><font class="medtxt">&nbsp;&nbsp;</td>
+<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>ХВС водоподведение</b><font color=000000>:</td>
+
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+000000221&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+<input type="text" name="service1counter1" size="11" maxlength="9" class="medtxt" style="margin-bottom:3px;">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+</tr>
+<tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><font class="medtxt">&nbsp;&nbsp;</td>
+<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>ГВС водоподведение </b><font color=000000>:</td>
+
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+000000124&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+<input type="text" name="service2counter1" size="11" maxlength="9" class="medtxt" style="margin-bottom:3px;">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+</tr>
+<tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr>
+<td><font class="microtxt"></td>
+<td><font class="microtxt">&nbsp;&nbsp;</td>
+<td><font class="microtxt"></td>
+<td><font class="medtxt"><INPUT TYPE="submit" NAME="put" class="medtxt" value="Сохранить" size="9"></td>
+<td><font class="microtxt"></td>
+<td><font class="microtxt"></td>
+<td><font class="microtxt"></td>
+<td><font class="microtxt"></td>
+<td><font class="microtxt"></td>
+<td><font class="microtxt"></td>
+</tr>
+</table>
+</form>
+<!-- /WriteInputs() -->
+	</td></tr></table></TD>
+	</TR>
+
+	<!--============= (END OF LINES) =====================-->
+
+	</table>
+
+<SCRIPT LANGUAGE="JavaScript">
+WriteKvartaFooter();
+</SCRIPT>
+</HTML>

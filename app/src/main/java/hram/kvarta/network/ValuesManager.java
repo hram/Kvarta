@@ -1,7 +1,6 @@
 package hram.kvarta.network;
 
 import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
@@ -25,22 +24,21 @@ public class ValuesManager extends BaseManager {
     private final long[] coldValues = new long[4];
     Account mAccount;
 
-    public long getHotValue(int index){
+    public long getHotValue(int index) {
         return hotValues[index];
     }
 
-    public long getColdValue(int index){
+    public long getColdValue(int index) {
         return coldValues[index];
     }
 
-    public ValuesManager(OkHttpClient client, Account account) {
-        //super(client);
+    public ValuesManager(Account account) {
         mAccount = account;
     }
 
-    public boolean getValues(){
+    public boolean getValues() {
         try {
-            Request request = new Request.Builder().url("http://www2.kvarta-c.ru/voda.php?action=tenant").build();
+            Request request = new Request.Builder().url(createUrl("/voda.php?action=tenant")).build();
             Response response = mClient.newCall(request).execute();
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
@@ -85,7 +83,7 @@ public class ValuesManager extends BaseManager {
         return true;
     }
 
-    public boolean saveValues(String newValueHot, String newValueCold){
+    public boolean saveValues(String newValueHot, String newValueCold) {
         try {
 
             RequestBody formBody = new FormEncodingBuilder()
@@ -97,7 +95,7 @@ public class ValuesManager extends BaseManager {
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://www2.kvarta-c.ru/voda.php")
+                    .url(createUrl("/voda.php"))
                     .post(formBody)
                     .build();
 
@@ -113,7 +111,7 @@ public class ValuesManager extends BaseManager {
             Element link = doc.select("a[href]").first();
             //Log.d(TAG, link.attr("href"));
 
-            request = new Request.Builder().url("http://www2.kvarta-c.ru/" + link.attr("href")).build();
+            request = new Request.Builder().url(createUrl(link.attr("href"))).build();
             response = mClient.newCall(request).execute();
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 

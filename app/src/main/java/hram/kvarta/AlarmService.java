@@ -16,14 +16,16 @@ import droidkit.util.Sequence;
 public class AlarmService extends IntentService {
 
     public static final int NOTIFICATION_ID = Sequence.get().nextInt();
+    private AlarmManager mAlarmManager;
 
     public AlarmService() {
         super(AlarmService.class.getName());
+        mAlarmManager = new AlarmManager(getApplicationContext());
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        AlarmManager.setAlarm(getApplicationContext());
+        mAlarmManager.setAlarm(mAlarmManager.getAlarmDate().getTimeInMillis());
         showNotification();
     }
 

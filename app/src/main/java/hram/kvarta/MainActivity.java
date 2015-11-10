@@ -24,8 +24,6 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.squareup.okhttp.OkHttpClient;
-
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.TypedPrefs;
@@ -43,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     Settings mSettings;
     Account mAccount;
     private AsyncTask<Void, Void, Boolean> mTask = null;
+    private AlarmManager mAlarmManager;
 
     @InjectView(R.id.layout_progress)
     View mLayoutProgress;
@@ -128,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
         mSettings = TypedPrefs.from(this, Settings.class);
         mAccount = new Account(this);
+        mAlarmManager = new AlarmManager(getApplicationContext());
 
         setTitle(R.string.title_activity_main);
         //mAccount.reset();
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         //DroidKit.onResume(this);
         mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
 
-        AlarmManager.setAlarm(getApplicationContext());
+        mAlarmManager.setAlarm(mAlarmManager.getAlarmDate().getTimeInMillis());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mFlash.setVisibility(View.GONE);
@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     /**
      * Сбрасывает все значения в 0
      */
-    private void resetValues(){
+    private void resetValues() {
         mNPH1.setValue(0);
         mNPH2.setValue(0);
         mNPH3.setValue(0);
@@ -316,9 +316,10 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     /**
      * Отоплажает текущае значения
-     * @param address адрес пользователя
-     * @param userInfo информация о пользователе
-     * @param currentHotValue новые значения хорячей воды
+     *
+     * @param address          адрес пользователя
+     * @param userInfo         информация о пользователе
+     * @param currentHotValue  новые значения хорячей воды
      * @param currentColdValue новые значения ходолной воды
      */
     private void displayCurrentState(String address, String userInfo, String currentHotValue, String currentColdValue) {
@@ -380,12 +381,12 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     private void cameraOnOff() {
         if (mCamera == null) {
             //try {
-                mCamera = Camera.open();
-                mCamera.startPreview();
-                Camera.Parameters parameters = mCamera.getParameters();
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                mCamera.setParameters(parameters);
-                mFlash.setImageResource(R.drawable.flash_on);
+            mCamera = Camera.open();
+            mCamera.startPreview();
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            mCamera.setParameters(parameters);
+            mFlash.setImageResource(R.drawable.flash_on);
             //} catch (java.lang.NullPointerException e) {
             //    showSnackbar(getString(R.string.camera_not_found));
             //} catch (Exception e) {
@@ -393,13 +394,13 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             //}
         } else {
             //try {
-                Camera.Parameters parameters = mCamera.getParameters();
-                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                mCamera.setParameters(parameters);
-                mCamera.stopPreview();
-                mCamera.release();
-                mCamera = null;
-                mFlash.setImageResource(R.drawable.flash_off);
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            mCamera.setParameters(parameters);
+            mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
+            mFlash.setImageResource(R.drawable.flash_off);
             //} catch (Exception e) {
             //    showSnackbar(getString(R.string.camera_close_error));
             //}
@@ -481,8 +482,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     public class GetInfoTask extends AsyncTask<Void, Void, Boolean> {
 
-        OkHttpClient client = OkClient.create(getApplicationContext());
-        ValuesManager mValuesManager = new ValuesManager(client, mAccount);
+        ValuesManager mValuesManager = new ValuesManager(mAccount);
 
         GetInfoTask() {
         }
@@ -513,8 +513,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     public class SaveTask extends AsyncTask<Void, Void, Boolean> {
 
-        OkHttpClient client = OkClient.create(getApplicationContext());
-        ValuesManager mValuesManager = new ValuesManager(client, mAccount);
+        ValuesManager mValuesManager = new ValuesManager(mAccount);
 
         SaveTask() {
         }

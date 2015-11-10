@@ -1,0 +1,212 @@
+HTTP/1.1 200 OK
+Vary: Accept-Encoding
+Date: Tue, 10 Nov 2015 10:49:42 GMT
+Server: LiteSpeed
+Connection: close
+X-Powered-By: PHP/5.2.9
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+Content-Type: text/html
+Content-Length: 6736
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<meta http-equiv=Content-Type content="text/html;charset=windows-1251">
+<meta http-equiv="Expires" content="Mon, Mar 15 2004 08:03:42 GMT" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<HTML>
+
+<SCRIPT SRC="kvarta.js"></SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+WriteKvartaHeader('счетчики','voda.php');
+</SCRIPT>
+
+	<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+
+	<!--======================= LINE 1 ==================-->
+	<TR>
+	<TD><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0><tr><td>
+	  	<SCRIPT LANGUAGE="JavaScript">
+		WriteTitle('Ввод показаний счетчиков');
+	 	</SCRIPT>
+	</td></tr></table></TD>
+	</TR>
+
+	<!--======================= LINE 2 =================-->
+	<TR>
+	<TD><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0><tr><td>
+		<font class=medtxt>
+		Жильцы могут ввести показания счетчиков воды, газа, электроэнергии через интернет (на этой странице),
+		а бухгалтеры ТСЖ и УК по нажатию всего одной кнопки легко загрузить эти показания
+		в программу «Кварта-С» и рассчитать квартплату.<br> 
+		Хотите узнать подробнее? - введите <b><font color=ff3300>пароль "демо"</b></font> для входа в 
+		демонстрационный режим.
+		</font><br><br>
+		</td></tr></table></TD>
+	</TR>
+
+	<!--======================= LINE 3 =================-->
+	<TR align=left> <TD WIDTH=100% align=left><TABLE><TR>
+
+		<!--================== COLUMN 1 =================-->
+		<TD WIDTH=42% valign=top align=left><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+	
+		<tr>
+
+<td valign=top><IMG SRC="images/bug2.gif" ALT="bullet" WIDTH=11 HEIGHT=16 BORDER=0 VSPACE=2></td>
+<td valign=top><font class=HH4>Вход для жильцов</font>
+<font class="medtxt"><br><br>
+<!-- d_AddHeader0(); -->
+<TABLE cellPadding=0 width=100% border=0 cellspasing="0"><TBODY>
+<TR class=bg-gray>
+<TD>
+<TABLE cellSpacing=1 cellPadding=5 width="100%" border=0>
+<TBODY>
+<TR class=bg-white>
+<TD>
+<!-- /d_AddHeader0(); -->
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center><tr><td>
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center>
+<tr>
+<FORM NAME="form_tenant" ACTION="/voda.php" METHOD="post">
+<input type="hidden" name="action" value="login" />
+<input type="hidden" name="subaction" value="enter" />
+<input type="hidden" name="usertype" value="tenant" />
+<td><font class="medtxt">Рег. номер ТСЖ/УК:</td>
+<td><INPUT type="text" NAME="tsgid" SIZE="10" maxlength="4"></td>
+<td><font class="medtxt" color=555555>(4 цифры)</td>
+<td>&nbsp; </td>
+</tr>
+
+<tr>
+<td><font class="medtxt">Номер лицевого счета:</td>
+<td><INPUT type="text" NAME="accountid" SIZE="10" maxlength="9"></td>
+<td><font class="medtxt" color=555555>&nbsp;</td>
+<td>&nbsp; </td>
+</tr>
+
+<tr>
+<td><font class="medtxt">Пароль:</td>
+<td><INPUT type="password" NAME="password" SIZE="10" maxlength="15"></td>
+<td><INPUT TYPE="submit" font class="medtxt" value="Войти" onClick="javascript:if( ('demo'!=document.form_tenant.password.value && 'демо'!=document.form_tenant.password.value) && (4!=document.form_tenant.tsgid.value.length||''==document.form_tenant.password.value) ){window.alert('Пожалуйста, укажите правильные ТСЖ/УК, Счет, Пароль');return false;}else{while (document.form_tenant.accountid.value.length<9) {document.form_tenant.accountid.value = '0'+document.form_tenant.accountid.value} ; return true;}"></td>
+</FORM>
+<td>&nbsp; </td>
+</tr>
+
+</table>
+</td></tr>
+<!-- if (!PasswordIsCorrect)  -->
+<tr><td><table>
+<tr><td><font class="medtxt">
+				      <a href="/voda.php?action=password&subaction=forgotpassword&usertype=tenant">Вспомнить</a> или
+				      <a href="/voda.php?action=password&subaction=changepassword&usertype=tenant">сменить пароль</a>
+				      </td></tr>
+ 		                  </table></td></tr>
+<!-- /if (!PasswordIsCorrect)  -->
+</table>
+<!-- d_AddFooter(); -->
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+</TD></TR></TBODY>
+</TABLE>
+<!-- /d_AddFooter(); -->
+<font class="microtxt"><br><br></font>
+
+					<b><font color=ff3300>В случае любых вопросов -<br>
+
+					обращайтесь в бухгалтерию вашего ТСЖ (вашей УК).</font></b><br><br>
+
+					<u>Телефон бухглатерии</u> должен быть указан внизу счета (квитанции).</td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		</table>
+		</TD> 
+
+		<!--================== COLUMN 2 =================-->
+		<TD WIDTH=6%>&nbsp;&nbsp;&nbsp;&nbsp;</TD> 
+
+		<!--================== COLUMN 3 =================-->
+		<TD WIDTH=42% valign=top align=left><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+
+		<tr>
+
+<td valign=top><IMG SRC="images/bug2.gif" ALT="bullet" WIDTH=11 HEIGHT=16 BORDER=0 VSPACE=2></td>
+<td valign=top><font class=HH4>Вход для бухгалтеров</font>
+<font class="medtxt"><br><br>
+<!-- d_AddHeader0(); -->
+<TABLE cellPadding=0 width=100% border=0 cellspasing="0"><TBODY>
+<TR class=bg-gray>
+<TD>
+<TABLE cellSpacing=1 cellPadding=5 width="100%" border=0>
+<TBODY>
+<TR class=bg-white>
+<TD>
+<!-- //d_AddHeader0(); -->
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center><tr><td>
+<table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center>
+<tr>
+<FORM NAME="form_tsg" ACTION="/voda.php" METHOD="post">
+<input type="hidden" name="action" value="login" />
+<input type="hidden" name="subaction" value="enter" />
+<input type="hidden" name="usertype" value="tsg" />
+<td><font class="medtxt">Рег. номер:</td>
+<td><INPUT type="text" NAME="tsgid" SIZE="10" maxlength="4"></td>
+<td><font class="medtxt" color=555555>(4 цифры)</td>
+<td>&nbsp; </td>
+</tr>
+
+<tr>
+<td><font class="medtxt">Пин-код:</td>
+<td><INPUT type="password" NAME="password" SIZE="10" maxlength="15"></td>
+<td><INPUT TYPE="submit" NAME="button' + type + '" font class="medtxt" value="Войти" onClick="javascript:if( ('demo'!=document.form_tsg.password.value && 'демо'!=document.form_tsg.password.value) && (4!=document.form_tsg.tsgid.value.length||9!=document.form_tsg.accountid.value.length||''==document.form_tsg.password.value)){window.alert('Пожалуйста, укажите правильные ТСЖ/УК, Пароль');return false;}else{return true;}"></td>
+</FORM>
+<td>&nbsp; </td>
+</tr>
+
+</table>
+</td></tr>
+<!-- if (!PasswordIsCorrect)  -->
+<tr><td><table>
+ 		                  </table></td></tr>
+<!-- /if (!PasswordIsCorrect)  -->
+</table>
+<!-- d_AddFooter(); -->
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+</TD></TR></TBODY>
+</TABLE>
+<!-- /d_AddFooter(); -->
+<font class="microtxt"><br><br></font>
+Забыли пин-код?<br/>
+Он указан в меню "Сервис"-"Пин-код".
+</td>
+
+		</tr>
+
+		<tr><td>&nbsp;</td></tr>
+
+		</table>
+		</TD> 
+		<!--================== END OF COLUMNS =================-->
+
+		</TR></TABLE></TD>
+
+	</TR>
+
+	<!--============= (END OF LINES) =====================-->
+
+	</table>
+
+<SCRIPT LANGUAGE="JavaScript">
+WriteKvartaFooter();
+</SCRIPT>
+</HTML>

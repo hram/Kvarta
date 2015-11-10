@@ -7,12 +7,12 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.squareup.okhttp.OkHttpClient;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.MalformedURLException;
 
 import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.ValuesManager;
@@ -30,7 +30,6 @@ public class ValuesManagerTest {
     SharedPreferences mPreferences;
     Account mAccount;
     AccountManager mAccountManager;
-    ValuesManager mValuesManager;
 
     /**
      * @return The current context.
@@ -40,7 +39,7 @@ public class ValuesManagerTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws MalformedURLException {
 
         assertThat(InstrumentationRegistry.getContext(), is(notNullValue()));
         assertThat(InstrumentationRegistry.getTargetContext(), is(notNullValue()));
@@ -54,16 +53,10 @@ public class ValuesManagerTest {
                 .build(getContext());
         assertThat(mAccount, is(notNullValue()));
 
-        OkHttpClient client = OkClient.create(getContext());
-        assertThat(client, is(notNullValue()));
-
         mAccountManager = new AccountManager();
         assertThat(mAccountManager, is(notNullValue()));
 
-        assertThat(mAccountManager.logIn(mAccount),is(true));
-
-        mValuesManager = new ValuesManager(client, mAccount);
-        assertThat(mValuesManager, is(notNullValue()));
+        assertThat(mAccountManager.logIn(mAccount), is(true));
     }
 
     @After
@@ -72,9 +65,12 @@ public class ValuesManagerTest {
 
     @Test
     public void testGetValues() {
-        assertThat(mValuesManager.getValues(), is(true));
+        ValuesManager valuesManager = new ValuesManager(mAccount);
+        assertThat(valuesManager, is(notNullValue()));
 
-        assertThat(mValuesManager.getHotValue(0), is(124L));
-        assertThat(mValuesManager.getColdValue(0), is(221L));
+        assertThat(valuesManager.getValues(), is(true));
+
+        assertThat(valuesManager.getHotValue(0), is(124L));
+        assertThat(valuesManager.getColdValue(0), is(221L));
     }
 }

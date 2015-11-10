@@ -7,6 +7,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
+import java.net.URL;
 
 import hram.kvarta.Account;
 
@@ -14,24 +15,14 @@ import hram.kvarta.Account;
  * @author Evgeny Khramov
  */
 public class AccountManager extends BaseManager {
-    private Account mAccount;
-/*
-    public AccountManager(Account account, OkHttpClient client) {
-        //super(client);
-        mAccount = account;
-    }
 
-    public AccountManager(OkHttpClient client) {
-        //super(client);
-    }
-*/
     public boolean logIn(Account account) {
         return logIn(account.getTsgId(), account.getAccountId(), account.getPassword(), account.isDemo());
     }
 
     public boolean logIn(String tsgID, String accountID, String password, boolean demo) {
         try {
-            Request request = new Request.Builder().url("http://www2.kvarta-c.ru/voda.php?action=login").build();
+            Request request = new Request.Builder().url(createUrl("/voda.php?action=login")).build();
             Response response = mClient.newCall(request).execute();
             if (!response.isSuccessful())
                 throw new IOException("Unexpected code " + response);
@@ -64,7 +55,7 @@ public class AccountManager extends BaseManager {
             }
 
             request = new Request.Builder()
-                    .url("http://www2.kvarta-c.ru/voda.php")
+                    .url(createUrl("/voda.php"))
                     .post(formBody)
                     .build();
 
@@ -77,7 +68,7 @@ public class AccountManager extends BaseManager {
             if (!respString.contains("Logged in. Click to continue"))
                 throw new IOException();
 
-            request = new Request.Builder().url("http://www2.kvarta-c.ru/voda.php?action=tenant").build();
+            request = new Request.Builder().url(new URL(mHttpUrl.url(), "/voda.php?action=tenant")).build();
             response = mClient.newCall(request).execute();
             if (!response.isSuccessful())
                 throw new IOException("Unexpected code " + response);

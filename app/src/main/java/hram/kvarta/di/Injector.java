@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.di;
 
 import dagger.ObjectGraph;
 
