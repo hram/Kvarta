@@ -70,7 +70,7 @@ public class ValuesManagerTest {
 
         assertThat(valuesManager.getValues(), is(true));
 
-        assertThat(valuesManager.getHotValue(0), is(124L));
-        assertThat(valuesManager.getColdValue(0), is(221L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(124L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(221L));
     }
 }

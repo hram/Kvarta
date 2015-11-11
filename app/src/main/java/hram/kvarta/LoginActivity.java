@@ -94,6 +94,8 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             mArgs = TypedBundle.from(new Bundle(), LoginActivity.Args.class);
         }
+
+        setResult(Activity.RESULT_CANCELED);
     }
 
     @OnClick(R.id.sign_in_button)

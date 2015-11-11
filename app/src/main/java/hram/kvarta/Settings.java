@@ -2,6 +2,7 @@ package hram.kvarta;
 
 import droidkit.content.BoolValue;
 import droidkit.content.IntValue;
+import droidkit.content.LongValue;
 import droidkit.content.StringValue;
 import droidkit.content.Value;
 
@@ -38,4 +39,7 @@ public interface Settings {
 
     @Value(intValue = 26)
     IntValue remindDate();
+
+    @Value
+    LongValue lastRebootTime();
 }

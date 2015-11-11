@@ -83,8 +83,8 @@ public class ValuesManagerMockTest {
         RecordedRequest request = mServer.takeRequest();
         assertThat(request.getPath(), is("/voda.php?action=tenant"));
 
-        assertThat(valuesManager.getHotValue(0), is(124L));
-        assertThat(valuesManager.getColdValue(0), is(221L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(124L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(221L));
     }
 
     @Test
@@ -94,6 +94,7 @@ public class ValuesManagerMockTest {
         mServer.enqueue(getResponse("voda_action=tenant&rnd=1039871437.txt"));
 
         ValuesManager valuesManager = new ValuesManager(mAccount);
+        valuesManager.setServicesCount(2);
         assertThat(valuesManager, is(notNullValue()));
 
         assertThat(valuesManager.saveValues("124", "221"), is(true));
@@ -107,8 +108,28 @@ public class ValuesManagerMockTest {
         RecordedRequest request2 = mServer.takeRequest();
         assertThat(request2.getPath(), is("/voda.php?action=tenant&rnd=1039871437"));
 
-        assertThat(valuesManager.getHotValue(0), is(124L));
-        assertThat(valuesManager.getColdValue(0), is(221L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(124L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(221L));
+    }
+
+    @Test
+    public void testGetWaterAndElectricityMock() throws IOException, InterruptedException {
+
+        mServer.enqueue(getResponse("water_and_electricity/voda_action=tenant.txt"));
+
+        ValuesManager valuesManager = new ValuesManager(mAccount);
+        assertThat(valuesManager, is(notNullValue()));
+
+        assertThat(valuesManager.getValues(), is(true));
+        assertThat(mServer.getRequestCount(), is(1));
+
+        RecordedRequest request = mServer.takeRequest();
+        assertThat(request.getPath(), is("/voda.php?action=tenant"));
+
+        assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(116L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(281L));
+        assertThat(valuesManager.getValue(ValuesManager.ELECTRICITY_DAY), is(3098L));
+        assertThat(valuesManager.getValue(ValuesManager.ELECTRICITY_NIGHT), is(685L));
     }
 
     private MockResponse getResponse(String fileName) throws IOException {

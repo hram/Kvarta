@@ -20,16 +20,78 @@ import hram.kvarta.Account;
  */
 public class ValuesManager extends BaseManager {
 
+    public static final int WATER_HOT = 1;
+    public static final int WATER_COLD = 2;
+    public static final int ELECTRICITY_DAY = 3;
+    public static final int ELECTRICITY_NIGHT = 4;
+
     private final long[] hotValues = new long[4];
     private final long[] coldValues = new long[4];
-    Account mAccount;
+    private final long[] elDayValues = new long[4];
+    private final long[] elNightValues = new long[4];
+    private Account mAccount;
+    private int mServicesCount;
 
-    public long getHotValue(int index) {
-        return hotValues[index];
+    public int getServicesCount() {
+        return mServicesCount;
     }
 
-    public long getColdValue(int index) {
-        return coldValues[index];
+    public void setServicesCount(int value) {
+        mServicesCount = value;
+    }
+
+    public long getValue(int value) {
+        return getValue(value, 0);
+    }
+
+    public long getValue(int value, int index) {
+        switch (value) {
+            case WATER_HOT:
+                return hotValues[index];
+            case WATER_COLD:
+                return coldValues[index];
+            case ELECTRICITY_DAY:
+                return elDayValues[index];
+            case ELECTRICITY_NIGHT:
+                return elNightValues[index];
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private void setValue(int v, int index, String value) {
+        switch (v) {
+            case WATER_HOT:
+                try {
+                    hotValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
+                } catch (NumberFormatException nfe) {
+                    hotValues[index] = -1;
+                }
+                break;
+            case WATER_COLD:
+                try {
+                    coldValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
+                } catch (NumberFormatException nfe) {
+                    coldValues[index] = -1;
+                }
+                break;
+            case ELECTRICITY_DAY:
+                try {
+                    elDayValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
+                } catch (NumberFormatException nfe) {
+                    elDayValues[index] = -1;
+                }
+                break;
+            case ELECTRICITY_NIGHT:
+                try {
+                    elNightValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
+                } catch (NumberFormatException nfe) {
+                    elNightValues[index] = -1;
+                }
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 
     public ValuesManager(Account account) {
@@ -44,6 +106,26 @@ public class ValuesManager extends BaseManager {
 
             ResponseBody body = response.body();
             Document doc = Jsoup.parse(body.string());
+
+            mServicesCount = 0;
+            Elements inputs = doc.select("input[name]");
+            for (Element item : inputs) {
+                String attr = item.attr("name");
+                switch (attr) {
+                    case "service1counter1":
+                        mServicesCount = 1;
+                        break;
+                    case "service2counter1":
+                        mServicesCount = 2;
+                        break;
+                    case "service3counter1":
+                        mServicesCount = 3;
+                        break;
+                    case "service4counter1":
+                        mServicesCount = 4;
+                        break;
+                }
+            }
 
             Elements links = doc.select("font[class=medtxt]");
 
@@ -63,15 +145,7 @@ public class ValuesManager extends BaseManager {
             //Log.d(TAG, item.text());
             mAccount.setLastTime(item.text());
 
-            setColdValue(0, links.get(28).text());
-            setColdValue(1, links.get(30).text());
-            setColdValue(2, links.get(32).text());
-            setColdValue(3, links.get(34).text());
-
-            setHotValue(0, links.get(38).text());
-            setHotValue(1, links.get(40).text());
-            setHotValue(2, links.get(42).text());
-            setHotValue(3, links.get(44).text());
+            setValues(links);
 
         } catch (IOException e) {
             return false;
@@ -136,15 +210,7 @@ public class ValuesManager extends BaseManager {
             //Log.d(TAG, item.text());
             mAccount.setLastTime(item.text());
 
-            setColdValue(0, links.get(28).text());
-            setColdValue(1, links.get(30).text());
-            setColdValue(2, links.get(32).text());
-            setColdValue(3, links.get(34).text());
-
-            setHotValue(0, links.get(38).text());
-            setHotValue(1, links.get(40).text());
-            setHotValue(2, links.get(42).text());
-            setHotValue(3, links.get(44).text());
+            setValues(links);
 
         } catch (IOException e) {
             return false;
@@ -156,19 +222,33 @@ public class ValuesManager extends BaseManager {
         return true;
     }
 
-    private void setColdValue(int index, String value) {
-        try {
-            coldValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
-        } catch (NumberFormatException nfe) {
-            coldValues[index] = -1;
+    private void setValues(Elements links) {
+        if (mServicesCount > 0) {
+            setValue(WATER_COLD, 0, links.get(28).text());
+            setValue(WATER_COLD, 1, links.get(30).text());
+            setValue(WATER_COLD, 2, links.get(32).text());
+            setValue(WATER_COLD, 3, links.get(34).text());
         }
-    }
 
-    private void setHotValue(int index, String value) {
-        try {
-            hotValues[index] = Long.parseLong(value.replaceAll("\\s+", ""));
-        } catch (NumberFormatException nfe) {
-            hotValues[index] = -1;
+        if (mServicesCount > 1) {
+            setValue(WATER_HOT, 0, links.get(38).text());
+            setValue(WATER_HOT, 1, links.get(40).text());
+            setValue(WATER_HOT, 2, links.get(42).text());
+            setValue(WATER_HOT, 3, links.get(44).text());
+        }
+
+        if (mServicesCount > 2) {
+            setValue(ELECTRICITY_DAY, 0, links.get(48).text());
+            setValue(ELECTRICITY_DAY, 1, links.get(50).text());
+            setValue(ELECTRICITY_DAY, 2, links.get(52).text());
+            setValue(ELECTRICITY_DAY, 3, links.get(54).text());
+        }
+
+        if (mServicesCount > 3) {
+            setValue(ELECTRICITY_NIGHT, 0, links.get(58).text());
+            setValue(ELECTRICITY_NIGHT, 1, links.get(60).text());
+            setValue(ELECTRICITY_NIGHT, 2, links.get(62).text());
+            setValue(ELECTRICITY_NIGHT, 3, links.get(64).text());
         }
     }
 }

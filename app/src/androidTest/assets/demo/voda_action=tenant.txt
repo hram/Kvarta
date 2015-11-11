@@ -1,6 +1,6 @@
 HTTP/1.1 200 OK
 Vary: Accept-Encoding
-Date: Tue, 10 Nov 2015 11:01:42 GMT
+Date: Wed, 11 Nov 2015 12:46:09 GMT
 Server: LiteSpeed
 Connection: close
 X-Powered-By: PHP/5.2.9
@@ -8,7 +8,7 @@ Expires: Thu, 19 Nov 1981 08:52:00 GMT
 Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
 Pragma: no-cache
 Content-Type: text/html
-Content-Length: 7516
+Content-Length: 10154
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <meta http-equiv=Content-Type content="text/html;charset=windows-1251">
@@ -61,16 +61,16 @@ WriteKvartaHeader('счетчики','voda.php');
 <table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center>
 			<tr>
 			<td><font class="medtxt">Номер лицевого счета:
-004 000 571</font>
+<font color=ff3300><b>демо-режим</b></font></font>
 			</td>
 			<td>&nbsp; </td>
 			</tr>
 			<tr>
-			<td><font class="medtxt">ООО "ЖИЛИЩНАЯ ЭКСПЛУАТАЦИОННАЯ СЛУЖБА №7", кв.№ 777</td>
+			<td><font class="medtxt">ТСЖ "Колизей", Невский д.22, кв.№ 26</td>
 			<td>&nbsp; </td>
 			</tr>
 			<tr>
-			<td><font class="medtxt">Пупкин М. В.</td>
+			<td><font class="medtxt">Набоков Иван Владимирович</td>
 			<td>&nbsp; </td>
 			</tr>
 
@@ -107,7 +107,7 @@ WriteKvartaHeader('счетчики','voda.php');
 <td>
 <font class="medtxt"><br><br><br>
 <font class="medtxt">
-Старые (предыдущие) показания от <font color=555555><b>27.10.2015</b></font><br>
+Старые (предыдущие) показания от <font color=555555><b>30.07.2009</b></font><br>
 </td><td>&nbsp; &nbsp;</td>
 <!-- /WriteReference() -->
 		</tr>
@@ -125,7 +125,7 @@ WriteKvartaHeader('счетчики','voda.php');
 	<TR>
 	<TD><table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0><tr><td>
 <!-- WriteInputs() -->
-<form action="/voda.php" method="post">
+<form action="/voda.php" method="post" onsubmit="javascript:window.alert('Данная функция в демонстрационном режиме запрещена');return false;">
 <input type="hidden" name="action" value="tenant" />
 <input type="hidden" name="subaction" value="tenantedit" />
 <table WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=4 valign=center align=left>
@@ -155,14 +155,80 @@ WriteKvartaHeader('счетчики','voda.php');
 </tr>
 <tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td><font class="medtxt">&nbsp;&nbsp;</td>
-<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>ХВС водоподведение</b><font color=000000>:</td>
+<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>Хол. вода</b><font color=000000>:</td>
 
 
 
 <td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
-000000221&nbsp;</font></td>
+006283&nbsp;</font></td>
 <td align=left style="padding-bottom:10px;"> <font class="medtxt">
-<input type="text" name="service1counter1" size="11" maxlength="9" class="medtxt" style="margin-bottom:3px;">
+<input type="text" name="service1counter1" size="11" maxlength="6" class="medtxt" style="margin-bottom:3px;">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+002546&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+<input type="text" name="service1counter2" size="11" maxlength="6" class="medtxt" style="margin-bottom:3px;">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+</tr>
+<tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><font class="medtxt">&nbsp;&nbsp;</td>
+<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>Гор. вода</b><font color=000000>:</td>
+
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+004027&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+<input type="text" name="service2counter1" size="11" maxlength="6" class="medtxt" style="margin-bottom:3px;">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+001983&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+<input type="text" name="service2counter2" size="11" maxlength="6" class="medtxt" style="margin-bottom:3px;">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+</font></td>
+
+
+</tr>
+<tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td><font class="medtxt">&nbsp;&nbsp;</td>
+<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>Электроэнергия</b><font color=000000>:</td>
+
+
+
+<td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
+14399&nbsp;</font></td>
+<td align=left style="padding-bottom:10px;"> <font class="medtxt">
+<input type="text" name="service3counter1" size="11" maxlength="6" class="medtxt" style="margin-bottom:3px;">
 </font></td>
 
 
@@ -187,14 +253,14 @@ WriteKvartaHeader('счетчики','voda.php');
 </tr>
 <tr><font class="microtxt"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
 <tr><td><font class="medtxt">&nbsp;&nbsp;</td>
-<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>ГВС водоподведение </b><font color=000000>:</td>
+<td valign=top style="padding-top:3px;"><font class="medtxt"><b><font color=555555>Газ</b><font color=000000>:</td>
 
 
 
 <td align=right valign=top style="padding-top:3px;"><font class="medtxt" color=555555>
-000000124&nbsp;</font></td>
+0187&nbsp;</font></td>
 <td align=left style="padding-bottom:10px;"> <font class="medtxt">
-<input type="text" name="service2counter1" size="11" maxlength="9" class="medtxt" style="margin-bottom:3px;">
+<input type="text" name="service4counter1" size="11" maxlength="4" class="medtxt" style="margin-bottom:3px;">
 </font></td>
 
 

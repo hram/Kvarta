@@ -12,6 +12,7 @@ public class Account {
 
     private static final String EMPTY_STRING = "";
     private Settings mSettings;
+    private Context mContext;
 
     public String getTsgId() {
         return mSettings.tsgId().get();
@@ -70,6 +71,7 @@ public class Account {
     }
 
     public Account(Context context) {
+        mContext = context;
         mSettings = TypedPrefs.from(context, Settings.class);
     }
 
@@ -90,6 +92,7 @@ public class Account {
         mSettings.tsgId().set(EMPTY_STRING);
         mSettings.accountId().set(EMPTY_STRING);
         mSettings.password().set(EMPTY_STRING);
+        new PersistentCookieStore(mContext).removeAll();
     }
 
     public static class Builder {

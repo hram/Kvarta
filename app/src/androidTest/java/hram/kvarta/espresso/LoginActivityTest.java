@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.espresso;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -27,6 +28,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import droidkit.content.TypedBundle;
+import hram.kvarta.Account;
+import hram.kvarta.BuildConfig;
+import hram.kvarta.LoginActivity;
+import hram.kvarta.R;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
@@ -37,11 +42,12 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-
+import static hram.kvarta.espresso.CustomViewMatchers.hasErrorText;
 
 /**
  * @author Evgeny Khramov
@@ -59,8 +65,6 @@ public class LoginActivityTest {
 
     @Before
     public void setUp() {
-        Log.v(TAG, "Test was set up!");
-
         assertThat(InstrumentationRegistry.getContext(), is(notNullValue()));
         assertThat(InstrumentationRegistry.getTargetContext(), is(notNullValue()));
 
@@ -71,7 +75,6 @@ public class LoginActivityTest {
 
     @After
     public void tearDown() {
-        Log.v(TAG, "Test was torn down!");
     }
 
     @BeforeClass
@@ -88,23 +91,62 @@ public class LoginActivityTest {
         return InstrumentationRegistry.getTargetContext();
     }
 
+    /**
+     * Все поля отображаются
+     */
+    @Test
+    public void testFindAllViews() {
+        mActivityRule.launchActivity(new Intent());
+
+        onView(withId(R.id.tsgid)).check(matches(isDisplayed()));
+        onView(withId(R.id.accountid)).check(matches(isDisplayed()));
+        onView(withId(R.id.password)).check(matches(isDisplayed()));
+        onView(withId(R.id.sign_in_button_demo)).check(matches(isDisplayed()));
+        onView(withId(R.id.sign_in_button)).check(matches(isDisplayed()));
+    }
+
+    /**
+     * Все поля обязательны к заполнению.
+     */
+    @Test
+    public void testAllFieldsRequired() {
+        mActivityRule.launchActivity(new Intent());
+
+        String errorString = getContext().getResources().getString(R.string.error_field_required);
+
+        // проверка на обязательность поля Номер ТСЖ
+        onView(withId(R.id.tsgid)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
+        onView(withId(R.id.sign_in_button)).perform(click());
+        onView(withId(R.id.tsgid)).check(matches(hasErrorText(errorString)));
+
+        // проверка на обязательность поля ID пользователя
+        onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
+        onView(withId(R.id.accountid)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
+        onView(withId(R.id.sign_in_button)).perform(click());
+        onView(withId(R.id.accountid)).check(matches(hasErrorText(errorString)));
+
+        // проверка на обязательность поля Пароль
+        onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
+        onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.sign_in_button)).perform(click());
+        onView(withId(R.id.password)).check(matches(hasErrorText(errorString)));
+    }
+
     @Test
     public void testErrorMessage() {
-        //mActivityRule.getActivity();
-
         mActivityRule.launchActivity(createIntent(true, true, true));
 
-        onView(withId(R.id.tsgid)).perform(clearText(), closeSoftKeyboard());
+        onView(ViewMatchers.withId(R.id.tsgid)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.sign_in_button)).perform(click());
 
         String errorString = getContext().getResources().getString(R.string.error_field_required);
         onView(withId(R.id.tsgid)).check(matches(hasErrorText(errorString)));
         onView(withId(R.id.tsgid)).check(matches(hasErrorText(errorString)));
         onView(withId(R.id.tsgid)).check(matches(hasErrorText(errorString)));
-    }
-
-    private static Matcher<? super View> hasErrorText(String expectedError) {
-        return new ErrorTextMatcher(expectedError);
     }
 
     @Test
@@ -165,19 +207,20 @@ public class LoginActivityTest {
         */
         //onView(isRoot()).perform(waitForMatch(withText(R.string.stf_alert_text), UI_TEST_TIMEOUT));
     }
-/*
-    @Test
-    public void shouldShowErrorOnEmptyUsername() throws Exception {
-        //given
 
-        //when
-        onView(withId(R.id.sign_in_button)).perform(click());
-        //then
-        onView(withId(R.id.tsgid)).check(matches(withError(R.string.error_field_required)));
+    /*
+        @Test
+        public void shouldShowErrorOnEmptyUsername() throws Exception {
+            //given
 
-    }
-*/
-    private Intent createIntent(boolean toMockNetwork, boolean networkResult, boolean switchOffAnimations){
+            //when
+            onView(withId(R.id.sign_in_button)).perform(click());
+            //then
+            onView(withId(R.id.tsgid)).check(matches(withError(R.string.error_field_required)));
+
+        }
+    */
+    private Intent createIntent(boolean toMockNetwork, boolean networkResult, boolean switchOffAnimations) {
         Bundle bundle = new Bundle();
         LoginActivity.Args args = TypedBundle.from(bundle, LoginActivity.Args.class);
         args.toMockNetwork().set(toMockNetwork);
@@ -209,27 +252,5 @@ public class LoginActivityTest {
 
             }
         };
-    }
-
-    private static class ErrorTextMatcher extends TypeSafeMatcher<View> {
-        private final String expectedError;
-
-        private ErrorTextMatcher(String expectedError) {
-            this.expectedError = expectedError;
-        }
-
-        @Override
-        public boolean matchesSafely(View view) {
-            if (!(view instanceof EditText)) {
-                return false;
-            }
-            EditText editText = (EditText) view;
-            return expectedError.equals(editText.getError());
-        }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("with error: " + expectedError);
-        }
     }
 }

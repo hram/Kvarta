@@ -26,14 +26,16 @@ class AlarmManager {
     public boolean setAlarm(long triggerAtMillis) {
         android.app.AlarmManager am = (android.app.AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         final Intent intent = new Intent(mContext, AlarmService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        Log.d(TAG, "Enable remind: " + mSettings.enableRemind().get());
+        Log.d(TAG, "Remind date: " + mSettings.remindDate().get());
+        Log.d(TAG, "New alarm time: " + new SimpleDateFormat("dd.MM hh.mm").format(triggerAtMillis));
 
         if (mSettings.enableRemind().get()) {
-            SimpleDateFormat format = new SimpleDateFormat("dd.MM hh.mm");
-            Log.d(TAG, "New alarm time: " + format.format(triggerAtMillis));
-
-            am.set(android.app.AlarmManager.RTC_WAKEUP, triggerAtMillis, PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+            am.set(android.app.AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
         } else {
-            am.cancel(PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+            am.cancel(pendingIntent);
         }
 
         return mSettings.enableRemind().get();

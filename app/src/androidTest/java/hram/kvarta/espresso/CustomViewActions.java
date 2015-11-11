@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.espresso;
 
 import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;

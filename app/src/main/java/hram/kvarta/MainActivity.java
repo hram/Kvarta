@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             showProgress(false);
 
             if (success) {
-                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getHotValue(0), "" + mValuesManager.getColdValue(0));
+                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getValue(ValuesManager.WATER_HOT), "" + mValuesManager.getValue(ValuesManager.WATER_COLD));
             } else {
                 LoginActivity.start(MainActivity.this);
             }
@@ -526,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         @Override
         protected void onPostExecute(final Boolean success) {
             if (success) {
-                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getHotValue(0), "" + mValuesManager.getColdValue(0));
+                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getValue(ValuesManager.WATER_HOT), "" + mValuesManager.getValue(ValuesManager.WATER_COLD));
             } else {
                 LoginActivity.start(MainActivity.this);
             }
