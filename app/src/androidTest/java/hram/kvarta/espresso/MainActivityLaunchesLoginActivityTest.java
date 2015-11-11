@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import hram.kvarta.Account;
 import hram.kvarta.BuildConfig;
+import hram.kvarta.Constants;
 import hram.kvarta.LoginActivity;
 import hram.kvarta.MainActivity;
 import hram.kvarta.R;
@@ -47,11 +48,8 @@ import static org.hamcrest.Matchers.notNullValue;
 public class MainActivityLaunchesLoginActivityTest {
 
     private static final String TAG = "UIT";
-    SharedPreferences mPreferences;
-    Account mAccount;
-
-    private static final String DEMO_NAME = "Набоков Иван Владимирович";
-    private static final String DEMO_ADDR = "ТСЖ \"Колизей\", Невский д.22, кв.№ 26";
+    private SharedPreferences mPreferences;
+    private Account mAccount;
 
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class, true, false);
@@ -151,11 +149,11 @@ public class MainActivityLaunchesLoginActivityTest {
 
         assertThat(mAccount.isValid(), is(true));
         assertThat(mAccount.isDemo(), is(true));
-        assertThat(mAccount.getUserInfo(), is(DEMO_NAME));
-        assertThat(mAccount.getAddress(), is(DEMO_ADDR));
+        assertThat(mAccount.getUserInfo(), is(Constants.DEMO_NAME));
+        assertThat(mAccount.getAddress(), is(Constants.DEMO_ADDR));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(DEMO_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(DEMO_NAME)));
+        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
+        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
     }
 
     @Test
