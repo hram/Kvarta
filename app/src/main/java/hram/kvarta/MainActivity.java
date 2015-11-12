@@ -26,7 +26,10 @@ import android.widget.TextView;
 
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
+import droidkit.content.BoolValue;
+import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
+import droidkit.content.Value;
 import hram.kvarta.network.ValuesManager;
 
 import static android.Manifest.permission.CAMERA;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     Account mAccount;
     private AsyncTask<Void, Void, Boolean> mTask = null;
     private AlarmManager mAlarmManager;
+    private Args mArgs;
 
     @InjectView(R.id.layout_progress)
     View mLayoutProgress;
@@ -94,8 +98,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @InjectView(R.id.action_save)
     View mActionSave;
 
-    //private final long[] hotValues = new long[4];
-    //private final long[] coldValues = new long[4];
     private String mNewValueHot, mNewValueCold;
     private Camera mCamera;
     private String mCurrentHotValue;
@@ -129,6 +131,12 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         mAccount = new Account(this);
         mAlarmManager = new AlarmManager(getApplicationContext());
 
+        if (getIntent().getExtras() != null) {
+            mArgs = TypedBundle.from(getIntent().getExtras(), Args.class);
+        } else {
+            mArgs = TypedBundle.from(new Bundle(), Args.class);
+        }
+
         setTitle(R.string.title_activity_main);
         //mAccount.reset();
 
@@ -153,9 +161,8 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @Override
     protected void onResume() {
         super.onResume();
-        //DroidKit.onResume(this);
-        mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
 
+        mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
         mAlarmManager.setAlarm(mAlarmManager.getAlarmDate().getTimeInMillis());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -227,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (!mArgs.disableAnimation().get() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLayoutMain.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -259,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showActionMenu(final boolean show) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (!mArgs.disableAnimation().get() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
             mActionSave.setVisibility(show ? View.VISIBLE : View.GONE);
             mActionSave.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
@@ -540,5 +547,10 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             mTask = null;
             showProgress(false);
         }
+    }
+
+    public interface Args {
+        @Value
+        BoolValue disableAnimation();
     }
 }

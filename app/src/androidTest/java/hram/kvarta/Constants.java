@@ -9,4 +9,10 @@ public class Constants {
 
     public static final String DEMO_NAME = "Набоков Иван Владимирович";
     public static final String DEMO_ADDR = "ТСЖ \"Колизей\", Невский д.22, кв.№ 26";
+
+    public static final int VALUES_ID_HOT = hram.kvarta.test.R.array.hotValues;
+    public static final int VALUES_ID_COLD = hram.kvarta.test.R.array.coldValues;
+
+    public static final int VALUES_ID_HOT_DЕМО = hram.kvarta.test.R.array.hotValuesDemo;
+    public static final int VALUES_ID_COLD_DЕМО = hram.kvarta.test.R.array.coldValuesDemo;
 }

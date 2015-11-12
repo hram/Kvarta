@@ -90,9 +90,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (getIntent().getExtras() != null) {
-            mArgs = TypedBundle.from(getIntent().getExtras(), LoginActivity.Args.class);
+            mArgs = TypedBundle.from(getIntent().getExtras(), Args.class);
         } else {
-            mArgs = TypedBundle.from(new Bundle(), LoginActivity.Args.class);
+            mArgs = TypedBundle.from(new Bundle(), Args.class);
         }
 
         setResult(Activity.RESULT_CANCELED);
