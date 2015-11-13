@@ -83,63 +83,69 @@ public class MainActivityLaunchesLoginActivityMockTest {
 
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_Login() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        mServer.enqueue(getResponse("voda_action=login.txt"));
-        mServer.enqueue(getResponse("login_post_response.txt"));
-        mServer.enqueue(getResponse("voda_action=tenant.txt"));
-        mServer.enqueue(getResponse("voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("login_post_response.txt"));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
-        onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
-        onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
+            onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
+            onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
+            onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
 
-        onView(withId(R.id.sign_in_button)).perform(click());
+            onView(withId(R.id.sign_in_button)).perform(click());
 
-        assertThat(mAccount.isValid(), is(true));
-        assertThat(mAccount.isDemo(), is(false));
-        assertThat(mAccount.getTsgId(), is(BuildConfig.tsgid));
-        assertThat(mAccount.getAccountId(), is(BuildConfig.accountid));
-        assertThat(mAccount.getPassword(), is(BuildConfig.password));
-        assertThat(mAccount.getUserInfo(), is(Constants.TEST_NAME));
-        assertThat(mAccount.getAddress(), is(Constants.TEST_ADDR));
+            assertThat(mAccount.isValid(), is(true));
+            assertThat(mAccount.isDemo(), is(false));
+            assertThat(mAccount.getTsgId(), is(BuildConfig.tsgid));
+            assertThat(mAccount.getAccountId(), is(BuildConfig.accountid));
+            assertThat(mAccount.getPassword(), is(BuildConfig.password));
+            assertThat(mAccount.getUserInfo(), is(Constants.TEST_NAME));
+            assertThat(mAccount.getAddress(), is(Constants.TEST_ADDR));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
 
-        assertThat(mServer.getRequestCount(), is(4));
+            assertThat(mServer.getRequestCount(), is(4));
+        } finally {
+            Intents.release();
+        }
     }
 
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_LoginDemo() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        mServer.enqueue(getResponse("voda_action=login.txt"));
-        mServer.enqueue(getResponse("login_post_response.txt"));
-        mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
-        mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("login_post_response.txt"));
+            mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
 
-        onView(withId(R.id.sign_in_button_demo)).perform(click());
+            onView(withId(R.id.sign_in_button_demo)).perform(click());
 
-        assertThat(mAccount.isValid(), is(true));
-        assertThat(mAccount.isDemo(), is(true));
-        assertThat(mAccount.getUserInfo(), is(Constants.DEMO_NAME));
-        assertThat(mAccount.getAddress(), is(Constants.DEMO_ADDR));
+            assertThat(mAccount.isValid(), is(true));
+            assertThat(mAccount.isDemo(), is(true));
+            assertThat(mAccount.getUserInfo(), is(Constants.DEMO_NAME));
+            assertThat(mAccount.getAddress(), is(Constants.DEMO_ADDR));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
 
-        assertThat(mServer.getRequestCount(), is(4));
+            assertThat(mServer.getRequestCount(), is(4));
+        } finally {
+            Intents.release();
+        }
     }
 
     /**
@@ -149,26 +155,29 @@ public class MainActivityLaunchesLoginActivityMockTest {
      */
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_LoginIncorrect() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        mServer.enqueue(getResponse("voda_action=login.txt"));
-        mServer.enqueue(getResponse("loginincorrect/login_post_response.txt"));
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("loginincorrect/login_post_response.txt"));
 
-        onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
-        onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
+            onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
+            onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
+            onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
 
-        onView(withId(R.id.sign_in_button)).perform(click());
+            onView(withId(R.id.sign_in_button)).perform(click());
 
-        String errorString = getContext().getResources().getString(R.string.error_incorrect_password);
-        onView(withId(R.id.password)).check(matches(hasErrorText(errorString)));
+            String errorString = getContext().getResources().getString(R.string.error_incorrect_password);
+            onView(withId(R.id.password)).check(matches(hasErrorText(errorString)));
 
-        assertThat(mServer.getRequestCount(), is(2));
+            assertThat(mServer.getRequestCount(), is(2));
+        }finally {
+            Intents.release();
+        }
     }
 
     private MockResponse getResponse(String fileName) throws IOException {

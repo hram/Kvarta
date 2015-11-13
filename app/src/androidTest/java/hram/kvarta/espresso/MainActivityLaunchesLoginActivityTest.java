@@ -79,92 +79,106 @@ public class MainActivityLaunchesLoginActivityTest {
 
     /**
      * При первом запуске должно открываться окно авторизации. Все поля пустые.
+     *
      * @throws Exception
      */
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        onView(withId(R.id.tsgid)).check(matches(isEmptyEditText()));
-        onView(withId(R.id.accountid)).check(matches(isEmptyEditText()));
-        onView(withId(R.id.password)).check(matches(isEmptyEditText()));
+            onView(withId(R.id.tsgid)).check(matches(isEmptyEditText()));
+            onView(withId(R.id.accountid)).check(matches(isEmptyEditText()));
+            onView(withId(R.id.password)).check(matches(isEmptyEditText()));
+        } finally {
+            Intents.release();
+        }
     }
 
     @Test
     public void testWhenThereIsAnExistingAccount_DoesNotLaunchLoginActivity() throws Exception {
-        Intents.init();
+        try {
+            Intents.init();
+            mAccount = new Account.Builder()
+                    .accountId(BuildConfig.accountid)
+                    .tsgId(BuildConfig.tsgid)
+                    .password(BuildConfig.password)
+                    .build(getContext());
 
-        mAccount = new Account.Builder()
-                .accountId(BuildConfig.accountid)
-                .tsgId(BuildConfig.tsgid)
-                .password(BuildConfig.password)
-                .build(getContext());
+            rule.launchActivity(new Intent());
 
-        rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()), times(0));
 
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()), times(0));
-
-        Intents.release();
+        } finally {
+            Intents.release();
+        }
     }
 
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_AndLogin() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
-        onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
+            onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
+            onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
+            onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
 
-        onView(withId(R.id.sign_in_button)).perform(click());
+            onView(withId(R.id.sign_in_button)).perform(click());
 
-        assertThat(mAccount.isValid(), is(true));
-        assertThat(mAccount.isDemo(), is(false));
-        assertThat(mAccount.getTsgId(), is(BuildConfig.tsgid));
-        assertThat(mAccount.getAccountId(), is(BuildConfig.accountid));
-        assertThat(mAccount.getPassword(), is(BuildConfig.password));
+            assertThat(mAccount.isValid(), is(true));
+            assertThat(mAccount.isDemo(), is(false));
+            assertThat(mAccount.getTsgId(), is(BuildConfig.tsgid));
+            assertThat(mAccount.getAccountId(), is(BuildConfig.accountid));
+            assertThat(mAccount.getPassword(), is(BuildConfig.password));
+        } finally {
+            Intents.release();
+        }
     }
 
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_AndLoginDemo() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        onView(withId(R.id.sign_in_button_demo)).perform(click());
+            onView(withId(R.id.sign_in_button_demo)).perform(click());
 
-        Intents.release();
+            assertThat(mAccount.isValid(), is(true));
+            assertThat(mAccount.isDemo(), is(true));
+            assertThat(mAccount.getUserInfo(), is(Constants.DEMO_NAME));
+            assertThat(mAccount.getAddress(), is(Constants.DEMO_ADDR));
 
-        assertThat(mAccount.isValid(), is(true));
-        assertThat(mAccount.isDemo(), is(true));
-        assertThat(mAccount.getUserInfo(), is(Constants.DEMO_NAME));
-        assertThat(mAccount.getAddress(), is(Constants.DEMO_ADDR));
-
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
+        } finally {
+            Intents.release();
+        }
     }
 
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_AndNotLogin() throws Exception {
-        mAccount.reset();
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        pressBack();
-        Intents.release();
-        assertThat(mAccount.isValid(), is(false));
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
+            pressBack();
+            assertThat(mAccount.isValid(), is(false));
+        } finally {
+            Intents.release();
+        }
     }
 }

@@ -108,8 +108,8 @@
     <orderEntry type="library" exported="" scope="TEST" name="okhttp-ws-2.5.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-idling-resource-2.2.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="bcprov-jdk15on-1.50" level="project" />
-    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="jsoup-1.8.1" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-library-1.3" level="project" />
     <orderEntry type="library" exported="" name="okhttp-2.5.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-integration-1.3" level="project" />
@@ -135,8 +135,8 @@
     <orderEntry type="library" exported="" scope="TEST" name="rules-0.4.1" level="project" />
     <orderEntry type="library" exported="" name="guava-15.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="javawriter-2.1.1" level="project" />
-    <orderEntry type="library" exported="" name="droidkit-processor-5.1.2" level="project" />
     <orderEntry type="library" exported="" name="javapoet-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="droidkit-processor-5.1.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="exposed-instrumentation-api-publish-0.4.1" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.0.14" level="project" />

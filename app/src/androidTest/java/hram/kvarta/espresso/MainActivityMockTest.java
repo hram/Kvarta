@@ -115,20 +115,23 @@ public class MainActivityMockTest {
      */
     @Test
     public void testWhenThereInExistingAccount() throws Exception {
-        mServer.enqueue(getResponse("voda_action=tenant.txt"));
+        try {
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()), times(0));
-        Intents.release();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()), times(0));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
 
-        checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
+            checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
 
-        assertThat(mServer.getRequestCount(), is(1));
+            assertThat(mServer.getRequestCount(), is(1));
+        } finally {
+            Intents.release();
+        }
     }
 
     /**
@@ -138,19 +141,22 @@ public class MainActivityMockTest {
      */
     @Test
     public void testWhenThereInExistingAccountButCookieExpires() throws Exception {
-        mServer.enqueue(getResponse("cookie_expires/voda_action=tenant.txt"));
+        try {
+            mServer.enqueue(getResponse("cookie_expires/voda_action=tenant.txt"));
 
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        onView(withId(R.id.tsgid)).check(matches(withText(BuildConfig.tsgid)));
-        onView(withId(R.id.accountid)).check(matches(withText(BuildConfig.accountid)));
-        onView(withId(R.id.password)).check(matches(withText(BuildConfig.password))).perform(closeSoftKeyboard());
+            onView(withId(R.id.tsgid)).check(matches(withText(BuildConfig.tsgid)));
+            onView(withId(R.id.accountid)).check(matches(withText(BuildConfig.accountid)));
+            onView(withId(R.id.password)).check(matches(withText(BuildConfig.password))).perform(closeSoftKeyboard());
 
-        assertThat(mServer.getRequestCount(), is(1));
+            assertThat(mServer.getRequestCount(), is(1));
+        } finally {
+            Intents.release();
+        }
     }
 
     /**
@@ -216,7 +222,7 @@ public class MainActivityMockTest {
 
         onView(withId(R.id.action_save)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         onView(withId(R.id.numberPickerH1)).perform(numberPickerScrollUp());
-        Thread.sleep(500);
+        Thread.sleep(1000);
         onView(withId(R.id.action_save)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
     }
 
@@ -254,83 +260,92 @@ public class MainActivityMockTest {
     /**
      * В меню выбрать "Выйти" программа переходит в окно авторизации. Все поля пустые.
      * В окне авторизации при нажатии Back происходит выход из приложения.
+     *
      * @throws Exception
      */
     @Test
     public void testStartLoginAfterLogout() throws Exception {
-        mServer.enqueue(getResponse("voda_action=tenant.txt"));
+        try {
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
-        Intents.init();
-        rule.launchActivity(createIntent(true));
-        intended(hasComponent(MainActivity.class.getName()));
+            Intents.init();
+            rule.launchActivity(createIntent(true));
+            intended(hasComponent(MainActivity.class.getName()));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
 
-        onView(isRoot()).perform(pressMenuKey());
+            onView(isRoot()).perform(pressMenuKey());
 
-        onView(withText(R.string.action_logout)).perform(click());
+            onView(withText(R.string.action_logout)).perform(click());
 
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        onView(withId(R.id.tsgid)).check(matches(isEmptyEditText()));
-        onView(withId(R.id.accountid)).check(matches(isEmptyEditText()));
-        onView(withId(R.id.password)).check(matches(isEmptyEditText()));
+            onView(withId(R.id.tsgid)).check(matches(isEmptyEditText()));
+            onView(withId(R.id.accountid)).check(matches(isEmptyEditText()));
+            onView(withId(R.id.password)).check(matches(isEmptyEditText()));
 
-        onView(isRoot()).perform(pressBack());
+            onView(isRoot()).perform(pressBack());
 
-        onView(withId(R.id.tvAddress)).check(doesNotExist());
+            onView(withId(R.id.tvAddress)).check(doesNotExist());
+        } finally {
+            Intents.release();
+        }
     }
 
     /**
      * При смене пользователей сначения счетчиков должны полностью обновляться
+     *
      * @throws Exception
      */
     @Test
     public void testChangeUser() throws Exception {
-        mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
+        try {
+            mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
 
-        Intents.init();
-        rule.launchActivity(new Intent());
-        intended(hasComponent(MainActivity.class.getName()));
-        intended(hasComponent(LoginActivity.class.getName()), times(0));
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()), times(0));
 
-        assertThat(mServer.getRequestCount(), is(1));
+            assertThat(mServer.getRequestCount(), is(1));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
 
-        checkValues(getValues(Constants.VALUES_ID_HOT_DЕМО), getValues(Constants.VALUES_ID_COLD_DЕМО));
+            checkValues(getValues(Constants.VALUES_ID_HOT_DЕМО), getValues(Constants.VALUES_ID_COLD_DЕМО));
 
-        onView(isRoot()).perform(pressMenuKey());
+            onView(isRoot()).perform(pressMenuKey());
 
-        onView(withText(R.string.action_logout)).perform(click());
+            onView(withText(R.string.action_logout)).perform(click());
 
-        intended(hasComponent(LoginActivity.class.getName()));
-        Intents.release();
+            intended(hasComponent(LoginActivity.class.getName()));
 
-        onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
-        onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
-        onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
+            onView(withId(R.id.tsgid)).perform(replaceText(BuildConfig.tsgid), closeSoftKeyboard());
+            onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
+            onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
 
-        mServer.enqueue(getResponse("voda_action=login.txt"));
-        mServer.enqueue(getResponse("login_post_response.txt"));
-        mServer.enqueue(getResponse("voda_action=tenant.txt"));
-        mServer.enqueue(getResponse("voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("login_post_response.txt"));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
-        onView(withId(R.id.sign_in_button)).perform(click());
+            onView(withId(R.id.sign_in_button)).perform(click());
 
-        assertThat(mServer.getRequestCount(), is(5));
+            assertThat(mServer.getRequestCount(), is(5));
 
-        onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
-        onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
 
-        checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
+            checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
+        } finally {
+            Intents.release();
+        }
     }
 
     /**
      * При нажатии на фонарик загорается или гаснет фонарик
+     *
      * @throws Exception
      */
     @Test
@@ -346,6 +361,28 @@ public class MainActivityMockTest {
         onView(withId(R.id.flash)).check(matches(withDrawable(R.drawable.flash_off)));
     }
 
+    /**
+     * По клику в меню "Обновить" обновляются данные счетчиков
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testUpdate() throws Exception {
+        mServer.enqueue(getResponse("voda_action=tenant.txt"));
+        rule.launchActivity(new Intent());
+
+        checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
+
+        mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
+
+        onView(isRoot()).perform(pressMenuKey());
+        onView(withText(R.string.action_reload)).perform(click());
+
+        checkValues(getValues(Constants.VALUES_ID_HOT_DЕМО), getValues(Constants.VALUES_ID_COLD_DЕМО));
+
+        assertThat(mServer.getRequestCount(), is(2));
+    }
+
     private MockResponse getResponse(String fileName) throws IOException {
         InputStream in = InstrumentationRegistry.getContext().getResources().getAssets().open(fileName);
         assertThat(in, is(notNullValue()));
@@ -353,7 +390,7 @@ public class MainActivityMockTest {
         return new MockResponse().setBody(new Buffer().readFrom(in));
     }
 
-    private int[] getValues(int arrayID){
+    private int[] getValues(int arrayID) {
         return InstrumentationRegistry.getContext().getResources().getIntArray(arrayID);
     }
 
