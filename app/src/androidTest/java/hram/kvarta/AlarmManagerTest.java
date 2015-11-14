@@ -49,6 +49,12 @@ public class AlarmManagerTest {
 
         mSettings.enableRemind().set(false);
         assertThat(mAlarmManager.setAlarm(mAlarmManager.getAlarmDate().getTimeInMillis()), is(false));
+
+        mSettings.enableRemind().set(true);
+        assertThat(mAlarmManager.setAlarm(), is(true));
+
+        mSettings.enableRemind().set(false);
+        assertThat(mAlarmManager.setAlarm(), is(false));
     }
 
     @Test

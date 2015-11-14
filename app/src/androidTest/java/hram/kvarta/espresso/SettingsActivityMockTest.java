@@ -63,7 +63,7 @@ import static org.hamcrest.Matchers.notNullValue;
 /**
  * @author Evgeny Khramov
  */
-public class SettingsActivityTest {
+public class SettingsActivityMockTest {
     SharedPreferences mPreferences;
     Account mAccount;
     Settings mSettings;

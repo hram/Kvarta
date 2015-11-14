@@ -81,6 +81,10 @@ public class MainActivityLaunchesLoginActivityMockTest {
         return InstrumentationRegistry.getTargetContext();
     }
 
+    /**
+     * При первом запуске должно открываться окно авторизации. Все поля пустые.
+     * @throws Exception
+     */
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_Login() throws Exception {
         try {
@@ -118,6 +122,10 @@ public class MainActivityLaunchesLoginActivityMockTest {
         }
     }
 
+    /**
+     * При первом запуске должно открываться окно авторизации. Все поля пустые.
+     * @throws Exception
+     */
     @Test
     public void testWhenThereInNoExistingAccount_LaunchesLoginActivity_LoginDemo() throws Exception {
         try {

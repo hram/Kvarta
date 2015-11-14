@@ -23,6 +23,10 @@ class AlarmManager {
         mSettings = TypedPrefs.from(context, Settings.class);
     }
 
+    public boolean setAlarm() {
+        return setAlarm(getAlarmDate().getTimeInMillis());
+    }
+
     public boolean setAlarm(long triggerAtMillis) {
         android.app.AlarmManager am = (android.app.AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         final Intent intent = new Intent(mContext, AlarmService.class);

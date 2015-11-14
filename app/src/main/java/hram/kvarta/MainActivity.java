@@ -24,13 +24,17 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.BoolValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
 import droidkit.content.Value;
+import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.ValuesManager;
+import io.fabric.sdk.android.Fabric;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -106,7 +110,9 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Fabric.with(this, new Crashlytics());
+        if(BuildConfig.crashlyticsEnabled) {
+            Fabric.with(this, new Crashlytics());
+        }
         setContentView(R.layout.activity_main);
 
         initNumberPicker(mNPC1);
@@ -138,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         }
 
         setTitle(R.string.title_activity_main);
-        //mAccount.reset();
 
         //setTitle(getString(R.string.selected_configuration));
 
@@ -163,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         super.onResume();
 
         mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
-        mAlarmManager.setAlarm(mAlarmManager.getAlarmDate().getTimeInMillis());
+        mAlarmManager.setAlarm();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mFlash.setVisibility(View.GONE);
@@ -172,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     @Override
     public void onPause() {
-        //DroidKit.onPause(this);
         super.onPause();
     }
 
@@ -490,13 +494,17 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     public class GetInfoTask extends AsyncTask<Void, Void, Boolean> {
 
         ValuesManager mValuesManager = new ValuesManager(mAccount);
+        AccountManager mAccountManager = new AccountManager();
 
         GetInfoTask() {
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return mValuesManager.getValues();
+            if (!mValuesManager.getValues()) {
+                return mAccountManager.logIn(mAccount) && mValuesManager.getValues();
+            }
+            return true;
         }
 
         @Override

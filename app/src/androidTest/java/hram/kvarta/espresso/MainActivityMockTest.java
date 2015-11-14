@@ -135,7 +135,7 @@ public class MainActivityMockTest {
     }
 
     /**
-     * Если есть авторизационные данные и куки просрочены то запускается экран авторизации. Авторизационные данные при этом введены.
+     * Если есть авторизационные данные и куки просрочены то происходит фоновая авторизация.
      *
      * @throws Exception
      */
@@ -143,17 +143,51 @@ public class MainActivityMockTest {
     public void testWhenThereInExistingAccountButCookieExpires() throws Exception {
         try {
             mServer.enqueue(getResponse("cookie_expires/voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("login_post_response.txt"));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
+
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()), times(0));
+
+            assertThat(mServer.getRequestCount(), is(5));
+
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
+            checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
+
+        } finally {
+            Intents.release();
+        }
+    }
+
+    /**
+     * Если есть авторизационные данные и куки просрочены и фоновая авторизация не удалась то запускается окно авторизации.
+     * Авторизационные данные при этом введены.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWhenThereInExistingAccountButCookieExpiresAndLoginFailed() throws Exception {
+        try {
+            mServer.enqueue(getResponse("cookie_expires/voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("loginincorrect/login_post_response.txt"));
 
             Intents.init();
             rule.launchActivity(new Intent());
             intended(hasComponent(MainActivity.class.getName()));
             intended(hasComponent(LoginActivity.class.getName()));
 
+            assertThat(mServer.getRequestCount(), is(3));
+
             onView(withId(R.id.tsgid)).check(matches(withText(BuildConfig.tsgid)));
             onView(withId(R.id.accountid)).check(matches(withText(BuildConfig.accountid)));
             onView(withId(R.id.password)).check(matches(withText(BuildConfig.password))).perform(closeSoftKeyboard());
 
-            assertThat(mServer.getRequestCount(), is(1));
         } finally {
             Intents.release();
         }

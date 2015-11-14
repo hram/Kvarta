@@ -14,8 +14,7 @@ public class AutoStart extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
             TypedPrefs.from(context, Settings.class).lastRebootTime().set(System.currentTimeMillis());
-            AlarmManager alarmManager = new AlarmManager(context.getApplicationContext());
-            alarmManager.setAlarm(alarmManager.getAlarmDate().getTimeInMillis());
+            new AlarmManager(context.getApplicationContext()).setAlarm();
         }
     }
 }
