@@ -1,4 +1,4 @@
-# Kvarta
+Kvarta
 =========================
 
 [![Build Status](https://travis-ci.org/hram/Kvarta.svg)](https://travis-ci.org/hram/Kvarta)
