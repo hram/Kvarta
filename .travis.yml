@@ -6,8 +6,4 @@ android:
     - extra-android-m2repository
     - android-23
 
-jdk:
-  - oraclejdk7
-  - oraclejdk8
-
 script: "./gradlew build"
