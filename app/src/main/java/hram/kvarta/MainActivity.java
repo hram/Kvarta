@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,7 +23,8 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
@@ -32,9 +32,15 @@ import droidkit.content.BoolValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
 import droidkit.content.Value;
-import hram.kvarta.network.AccountManager;
+import hram.kvarta.events.BusProvider;
+import hram.kvarta.events.LoadDataEndedEvent;
+import hram.kvarta.events.LoadDataStartedEvent;
+import hram.kvarta.events.LogInErrorEvent;
+import hram.kvarta.events.SaveDataErrorEvent;
+import hram.kvarta.events.SaveDataStartedEvent;
+import hram.kvarta.network.GetInfoService;
+import hram.kvarta.network.SaveInfoService;
 import hram.kvarta.network.ValuesManager;
-import io.fabric.sdk.android.Fabric;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -47,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     private static final int REQUEST_CAMERA = 1;
     Settings mSettings;
     Account mAccount;
-    private AsyncTask<Void, Void, Boolean> mTask = null;
     private AlarmManager mAlarmManager;
     private Args mArgs;
 
@@ -106,13 +111,11 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     private Camera mCamera;
     private String mCurrentHotValue;
     private String mCurrentColdValue;
+    Bus bus = BusProvider.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(BuildConfig.crashlyticsEnabled) {
-            Fabric.with(this, new Crashlytics());
-        }
         setContentView(R.layout.activity_main);
 
         initNumberPicker(mNPC1);
@@ -167,6 +170,8 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     protected void onResume() {
         super.onResume();
 
+        bus.register(this);
+
         mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
         mAlarmManager.setAlarm();
 
@@ -178,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     @Override
     public void onPause() {
         super.onPause();
+
+        bus.unregister(this);
     }
 
     @Override
@@ -429,21 +436,19 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     @OnClick(R.id.action_save)
     public void onActionSaveClick() {
-        startSaveTask();
+        startSaveInfoTask();
     }
 
     private void startGetInfoTask() {
         showProgress(true);
-        mTask = new GetInfoTask();
-        mTask.execute((Void) null);
+        startService(GetInfoService.getStartIntent(this));
     }
 
-    private void startSaveTask() {
+    private void startSaveInfoTask() {
         mNewValueHot = "" + mNPH5.getValue() + mNPH4.getValue() + mNPH3.getValue() + mNPH2.getValue() + mNPH1.getValue();
         mNewValueCold = "" + mNPC5.getValue() + mNPC4.getValue() + mNPC3.getValue() + mNPC2.getValue() + mNPC1.getValue();
         showProgress(true);
-        mTask = new SaveTask();
-        mTask.execute((Void) null);
+        startService(SaveInfoService.getStartIntent(this, mNewValueHot, mNewValueCold));
     }
 
     @Override
@@ -491,70 +496,30 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         }
     }
 
-    public class GetInfoTask extends AsyncTask<Void, Void, Boolean> {
-
-        ValuesManager mValuesManager = new ValuesManager(mAccount);
-        AccountManager mAccountManager = new AccountManager();
-
-        GetInfoTask() {
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            if (!mValuesManager.getValues()) {
-                return mAccountManager.logIn(mAccount) && mValuesManager.getValues();
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mTask = null;
-            showProgress(false);
-
-            if (success) {
-                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getValue(ValuesManager.WATER_HOT), "" + mValuesManager.getValue(ValuesManager.WATER_COLD));
-            } else {
-                LoginActivity.start(MainActivity.this);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mTask = null;
-            showProgress(false);
-        }
+    @Subscribe
+    public void loadDataStarted(LoadDataStartedEvent event) {
+        showProgress(true);
     }
 
-    public class SaveTask extends AsyncTask<Void, Void, Boolean> {
+    @Subscribe
+    public void saveDataStarted(SaveDataStartedEvent event) {
+        showProgress(true);
+    }
 
-        ValuesManager mValuesManager = new ValuesManager(mAccount);
+    @Subscribe
+    public void loadDataEnded(LoadDataEndedEvent event) {
+        displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + event.getValue(ValuesManager.WATER_HOT), "" + event.getValue(ValuesManager.WATER_COLD));
+        showProgress(false);
+    }
 
-        SaveTask() {
-        }
+    @Subscribe
+    public void logInError(LogInErrorEvent event) {
+        LoginActivity.start(this);
+    }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            return mValuesManager.saveValues(mNewValueHot, mNewValueCold);
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            if (success) {
-                displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + mValuesManager.getValue(ValuesManager.WATER_HOT), "" + mValuesManager.getValue(ValuesManager.WATER_COLD));
-            } else {
-                LoginActivity.start(MainActivity.this);
-            }
-
-            mTask = null;
-            showProgress(false);
-        }
-
-        @Override
-        protected void onCancelled() {
-            mTask = null;
-            showProgress(false);
-        }
+    @Subscribe
+    public void saveDataError(SaveDataErrorEvent event) {
+        LoginActivity.start(this);
     }
 
     public interface Args {

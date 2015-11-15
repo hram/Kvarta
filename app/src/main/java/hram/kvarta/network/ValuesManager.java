@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 import hram.kvarta.Account;
+import hram.kvarta.events.LoadDataEndedEvent;
 
 /**
  * @author Evgeny Khramov
@@ -29,8 +30,19 @@ public class ValuesManager extends BaseManager {
     private final long[] coldValues = new long[4];
     private final long[] elDayValues = new long[4];
     private final long[] elNightValues = new long[4];
-    private Account mAccount;
+    //private Account mAccount;
     private int mServicesCount;
+
+    public LoadDataEndedEvent createLoadDataEndedEvent() {
+        return new LoadDataEndedEvent(hotValues, coldValues, elDayValues, elNightValues);
+    }
+
+    public ValuesManager() {
+    }
+
+    public ValuesManager(int servicesCount) {
+        mServicesCount = servicesCount;
+    }
 
     public int getServicesCount() {
         return mServicesCount;
@@ -94,11 +106,7 @@ public class ValuesManager extends BaseManager {
         }
     }
 
-    public ValuesManager(Account account) {
-        mAccount = account;
-    }
-
-    public boolean getValues() {
+    public boolean getValues(Account account) {
         try {
             Request request = new Request.Builder().url(createUrl("/voda.php?action=tenant")).build();
             Response response = mClient.newCall(request).execute();
@@ -130,20 +138,16 @@ public class ValuesManager extends BaseManager {
             Elements links = doc.select("font[class=medtxt]");
 
             Element item = links.get(1);
-            //Log.d(TAG, item.text());
             if (!item.text().contains("Номер лицевого счета")) throw new IOException();
 
             item = links.get(2);
-            //Log.d(TAG, item.text());
-            mAccount.setAddress(item.text());
+            account.setAddress(item.text());
 
             item = links.get(3);
-            //Log.d(TAG, item.text());
-            mAccount.setUserInfo(item.text());
+            account.setUserInfo(item.text());
 
             item = links.get(5);
-            //Log.d(TAG, item.text());
-            mAccount.setLastTime(item.text());
+            account.setLastTime(item.text());
 
             setValues(links);
 
@@ -157,7 +161,7 @@ public class ValuesManager extends BaseManager {
         return true;
     }
 
-    public boolean saveValues(String newValueHot, String newValueCold) {
+    public boolean saveValues(Account account, String newValueHot, String newValueCold) {
         try {
 
             RequestBody formBody = new FormEncodingBuilder()
@@ -195,20 +199,16 @@ public class ValuesManager extends BaseManager {
             Elements links = doc.select("font[class=medtxt]");
 
             Element item = links.get(1);
-            //Log.d(TAG, item.text());
             if (!item.text().contains("Номер лицевого счета")) throw new IOException();
 
             item = links.get(2);
-            //Log.d(TAG, item.text());
-            mAccount.setAddress(item.text());
+            account.setAddress(item.text());
 
             item = links.get(3);
-            //Log.d(TAG, item.text());
-            mAccount.setUserInfo(item.text());
+            account.setUserInfo(item.text());
 
             item = links.get(5);
-            //Log.d(TAG, item.text());
-            mAccount.setLastTime(item.text());
+            account.setLastTime(item.text());
 
             setValues(links);
 

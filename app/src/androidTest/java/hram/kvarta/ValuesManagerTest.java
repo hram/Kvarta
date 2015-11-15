@@ -65,10 +65,10 @@ public class ValuesManagerTest {
 
     @Test
     public void testGetValues() {
-        ValuesManager valuesManager = new ValuesManager(mAccount);
+        ValuesManager valuesManager = new ValuesManager();
         assertThat(valuesManager, is(notNullValue()));
 
-        assertThat(valuesManager.getValues(), is(true));
+        assertThat(valuesManager.getValues(mAccount), is(true));
 
         assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(124L));
         assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(221L));

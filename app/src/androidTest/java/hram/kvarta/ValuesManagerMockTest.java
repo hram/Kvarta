@@ -74,10 +74,10 @@ public class ValuesManagerMockTest {
 
         mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
-        ValuesManager valuesManager = new ValuesManager(mAccount);
+        ValuesManager valuesManager = new ValuesManager();
         assertThat(valuesManager, is(notNullValue()));
 
-        assertThat(valuesManager.getValues(), is(true));
+        assertThat(valuesManager.getValues(mAccount), is(true));
         assertThat(mServer.getRequestCount(), is(1));
 
         RecordedRequest request = mServer.takeRequest();
@@ -93,11 +93,11 @@ public class ValuesManagerMockTest {
         mServer.enqueue(getResponse("save_post_response.txt"));
         mServer.enqueue(getResponse("voda_action=tenant&rnd=1039871437.txt"));
 
-        ValuesManager valuesManager = new ValuesManager(mAccount);
+        ValuesManager valuesManager = new ValuesManager();
         valuesManager.setServicesCount(2);
         assertThat(valuesManager, is(notNullValue()));
 
-        assertThat(valuesManager.saveValues("124", "221"), is(true));
+        assertThat(valuesManager.saveValues(mAccount, "124", "221"), is(true));
         assertThat(mServer.getRequestCount(), is(2));
 
         RecordedRequest request1 = mServer.takeRequest();
@@ -117,10 +117,10 @@ public class ValuesManagerMockTest {
 
         mServer.enqueue(getResponse("water_and_electricity/voda_action=tenant.txt"));
 
-        ValuesManager valuesManager = new ValuesManager(mAccount);
+        ValuesManager valuesManager = new ValuesManager();
         assertThat(valuesManager, is(notNullValue()));
 
-        assertThat(valuesManager.getValues(), is(true));
+        assertThat(valuesManager.getValues(mAccount), is(true));
         assertThat(mServer.getRequestCount(), is(1));
 
         RecordedRequest request = mServer.takeRequest();

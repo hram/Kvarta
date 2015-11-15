@@ -3,6 +3,7 @@ package hram.kvarta.espresso;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.matcher.ViewMatchers;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
+import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
 import hram.kvarta.Account;
 import hram.kvarta.BuildConfig;
@@ -207,7 +209,7 @@ public class SettingsActivityMockTest {
             mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
             Intents.init();
-            rule.launchActivity(new Intent());
+            rule.launchActivity(createIntent(true));
             intended(hasComponent(MainActivity.class.getName()));
 
             onView(withId(R.id.layout_usetInfo)).check(matches(withEffectiveVisibility(mSettings.enableUserInfo().get() ? ViewMatchers.Visibility.VISIBLE : ViewMatchers.Visibility.GONE)));
@@ -338,5 +340,15 @@ public class SettingsActivityMockTest {
         assertThat(in, is(notNullValue()));
 
         return new MockResponse().setBody(new Buffer().readFrom(in));
+    }
+
+    private Intent createIntent(boolean disableAnimation) {
+        Bundle bundle = new Bundle();
+        MainActivity.Args args = TypedBundle.from(bundle, MainActivity.Args.class);
+        args.disableAnimation().set(disableAnimation);
+
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        return intent;
     }
 }

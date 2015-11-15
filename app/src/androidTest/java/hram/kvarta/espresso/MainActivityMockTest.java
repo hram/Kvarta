@@ -149,11 +149,14 @@ public class MainActivityMockTest {
             mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
             Intents.init();
-            rule.launchActivity(new Intent());
+            rule.launchActivity(createIntent(true));
             intended(hasComponent(MainActivity.class.getName()));
             intended(hasComponent(LoginActivity.class.getName()), times(0));
 
             assertThat(mServer.getRequestCount(), is(5));
+
+            // TODO тут почему то без задержки не успевает отрисоваться
+            Thread.sleep(100);
 
             onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
             onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));

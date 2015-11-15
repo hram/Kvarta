@@ -3,18 +3,17 @@ package hram.kvarta;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import droidkit.content.TypedPrefs;
+import timber.log.Timber;
 
 /**
  * @author Evgeny Hramov
  */
 class AlarmManager {
-    private final static String TAG = "kvarta";
     private Context mContext;
     private Settings mSettings;
 
@@ -32,9 +31,9 @@ class AlarmManager {
         final Intent intent = new Intent(mContext, AlarmService.class);
         PendingIntent pendingIntent = PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Log.d(TAG, "Enable remind: " + mSettings.enableRemind().get());
-        Log.d(TAG, "Remind date: " + mSettings.remindDate().get());
-        Log.d(TAG, "New alarm time: " + new SimpleDateFormat("dd.MM hh.mm").format(triggerAtMillis));
+        Timber.d("Enable remind: " + mSettings.enableRemind().get());
+        Timber.d("Remind date: " + mSettings.remindDate().get());
+        Timber.d("New alarm time: " + new SimpleDateFormat("dd.MM hh.mm").format(triggerAtMillis));
 
         if (mSettings.enableRemind().get()) {
             am.set(android.app.AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
