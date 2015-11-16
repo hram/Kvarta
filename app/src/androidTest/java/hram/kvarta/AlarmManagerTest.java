@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.util.Calendar;
 
 import droidkit.content.TypedPrefs;
+import hram.kvarta.alarm.AlarmManager;
+import hram.kvarta.data.Settings;
 
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
 import static org.hamcrest.Matchers.is;

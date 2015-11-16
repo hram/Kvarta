@@ -24,14 +24,14 @@ import java.io.InputStream;
 
 import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.MainActivity;
+import hram.kvarta.activity.MainActivity;
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.R;
-import hram.kvarta.Settings;
-import hram.kvarta.SettingsActivity;
+import hram.kvarta.data.Settings;
+import hram.kvarta.activity.SettingsActivity;
 import hram.kvarta.di.Injector;
 import okio.Buffer;
 

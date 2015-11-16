@@ -7,6 +7,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import hram.kvarta.data.Account;
 import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.ValuesManager;
 

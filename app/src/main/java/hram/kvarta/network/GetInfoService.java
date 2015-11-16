@@ -7,7 +7,7 @@ import android.content.Intent;
 
 import com.squareup.otto.Bus;
 
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.LoadDataErrorEvent;

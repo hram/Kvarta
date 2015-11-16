@@ -1,9 +1,10 @@
-package hram.kvarta;
+package hram.kvarta.data;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import droidkit.content.TypedPrefs;
+import hram.kvarta.network.PersistentCookieStore;
 
 /**
  * @author Evgeny Hramov

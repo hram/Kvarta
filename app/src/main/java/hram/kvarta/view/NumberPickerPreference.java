@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.alarm;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,12 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import droidkit.content.TypedPrefs;
+import hram.kvarta.data.Settings;
 import timber.log.Timber;
 
 /**
  * @author Evgeny Hramov
  */
-class AlarmManager {
+public class AlarmManager {
     private Context mContext;
     private Settings mSettings;
 

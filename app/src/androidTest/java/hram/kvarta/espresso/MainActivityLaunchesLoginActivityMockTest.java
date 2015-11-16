@@ -2,6 +2,7 @@ package hram.kvarta.espresso;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
@@ -20,11 +21,12 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.io.InputStream;
 
-import hram.kvarta.Account;
+import droidkit.content.TypedBundle;
+import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.LoginActivity;
-import hram.kvarta.MainActivity;
+import hram.kvarta.activity.LoginActivity;
+import hram.kvarta.activity.MainActivity;
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.R;
 import hram.kvarta.di.Injector;
@@ -90,7 +92,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
         try {
             mAccount.reset();
             Intents.init();
-            rule.launchActivity(new Intent());
+            rule.launchActivity(createIntent(true));
             intended(hasComponent(MainActivity.class.getName()));
             intended(hasComponent(LoginActivity.class.getName()));
 
@@ -105,6 +107,8 @@ public class MainActivityLaunchesLoginActivityMockTest {
 
             onView(withId(R.id.sign_in_button)).perform(click());
 
+            Thread.sleep(200);
+
             assertThat(mAccount.isValid(), is(true));
             assertThat(mAccount.isDemo(), is(false));
             assertThat(mAccount.getTsgId(), is(BuildConfig.tsgid));
@@ -117,6 +121,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
             onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
 
             assertThat(mServer.getRequestCount(), is(4));
+
         } finally {
             Intents.release();
         }
@@ -141,6 +146,8 @@ public class MainActivityLaunchesLoginActivityMockTest {
             mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
 
             onView(withId(R.id.sign_in_button_demo)).perform(click());
+
+            Thread.sleep(200);
 
             assertThat(mAccount.isValid(), is(true));
             assertThat(mAccount.isDemo(), is(true));
@@ -193,5 +200,15 @@ public class MainActivityLaunchesLoginActivityMockTest {
         assertThat(in, is(notNullValue()));
 
         return new MockResponse().setBody(new Buffer().readFrom(in));
+    }
+
+    private Intent createIntent(boolean disableAnimation) {
+        Bundle bundle = new Bundle();
+        MainActivity.Args args = TypedBundle.from(bundle, MainActivity.Args.class);
+        args.disableAnimation().set(disableAnimation);
+
+        Intent intent = new Intent();
+        intent.putExtras(bundle);
+        return intent;
     }
 }

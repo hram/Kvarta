@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,6 +32,10 @@ import droidkit.content.BoolValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
 import droidkit.content.Value;
+import hram.kvarta.data.Account;
+import hram.kvarta.alarm.AlarmManager;
+import hram.kvarta.R;
+import hram.kvarta.data.Settings;
 import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.LoadDataEndedEvent;
 import hram.kvarta.events.LoadDataStartedEvent;

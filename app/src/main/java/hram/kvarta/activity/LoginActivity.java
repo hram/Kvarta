@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,12 +18,21 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.BoolValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.Value;
-import hram.kvarta.network.AccountManager;
+import hram.kvarta.R;
+import hram.kvarta.data.Account;
+import hram.kvarta.events.BusProvider;
+import hram.kvarta.events.UserLoginEndedEvent;
+import hram.kvarta.events.UserLoginErrorEvent;
+import hram.kvarta.events.UserLoginStartedEvent;
+import hram.kvarta.network.UserLoginService;
 
 import static android.Manifest.permission.INTERNET;
 
@@ -39,11 +47,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_INTERNET = 1;
 
     public static final int LOGIN_REQUEST_CODE = 100;
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
 
     @InjectView(R.id.tsgid)
     private EditText mTsgIdView;
@@ -61,6 +64,8 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     private Args mArgs;
+
+    Bus bus = BusProvider.getInstance();
 
     public static void start(Activity context) {
         context.startActivityForResult(new Intent(context, LoginActivity.class), LOGIN_REQUEST_CODE);
@@ -96,6 +101,20 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         setResult(Activity.RESULT_CANCELED);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        bus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        bus.unregister(this);
     }
 
     @OnClick(R.id.sign_in_button)
@@ -153,9 +172,6 @@ public class LoginActivity extends AppCompatActivity {
         if (!mayConnectInternet()) {
             return;
         }
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mTsgIdView.setError(null);
@@ -203,15 +219,13 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(tsgId, accountId, password, false);
-            mAuthTask.execute((Void) null);
+            startService(UserLoginService.getStartIntent(getApplicationContext(), tsgId, accountId, password, false));
         }
     }
 
     private void attemptLoginDemo() {
         showProgress(true);
-        mAuthTask = new UserLoginTask();
-        mAuthTask.execute((Void) null);
+        startService(UserLoginService.getStartDemoIntent(getApplicationContext()));
     }
 
     private boolean isAccountIdValid(String accountId) {
@@ -254,67 +268,22 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    @Subscribe
+    public void userLoginStarted(UserLoginStartedEvent event) {
+        showProgress(true);
+    }
 
-        private final String mTsgID;
-        private final String mAccountID;
-        private final String mPassword;
-        private final boolean mDemo;
-        AccountManager mAccountManager = new AccountManager();
+    @Subscribe
+    public void userLoginEnded(UserLoginEndedEvent event) {
+        setResult(RESULT_OK);
+        finish();
+    }
 
-        UserLoginTask() {
-            this("000000000", "000000000", "демо", true);
-        }
-
-        UserLoginTask(String tsgID, String accountID, String password, boolean demo) {
-            mTsgID = tsgID;
-            mAccountID = accountID;
-            mPassword = password;
-            mDemo = demo;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            if (mArgs.toMockNetwork().get()) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                }
-                return mArgs.networkResult().get();
-            }
-
-            return mAccountManager.logIn(mTsgID, mAccountID, mPassword, mDemo);
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                new Account.Builder()
-                        .accountId(mAccountID)
-                        .tsgId(mTsgID)
-                        .password(mPassword)
-                        .demo(mDemo)
-                        .build(getApplicationContext());
-                setResult(RESULT_OK);
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+    @Subscribe
+    public void userLoginError(UserLoginErrorEvent event) {
+        showProgress(false);
+        mPasswordView.setError(getString(R.string.error_incorrect_password));
+        mPasswordView.requestFocus();
     }
 
     public interface Args {

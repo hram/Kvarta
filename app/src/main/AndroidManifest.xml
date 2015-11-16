@@ -1,69 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="hram.kvarta" >
+<manifest package="hram.kvarta"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
+        android:required="true"/>
     <uses-feature
         android:name="android.hardware.camera.flash"
-        android:required="true" />
+        android:required="true"/>
 
     <application
+        android:name=".KvartaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".KvartaApplication">
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/ac_label_login" >
-        </activity>
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        android:theme="@style/AppTheme">
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/ac_label_login">
+        </activity>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".AlarmService"
-            android:exported="false" />
-
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:name=".activity.SettingsActivity"
+            android:label="@string/title_activity_settings">
         </activity>
-        <receiver android:name=".AutoStart">
+
+        <service android:name=".alarm.AlarmService" android:exported="false"/>
+        <service android:name=".network.GetInfoService" android:exported="false"/>
+        <service android:name=".network.SaveInfoService" android:exported="false"/>
+        <service android:name=".network.UserLoginService" android:exported="false"/>
+
+        <receiver android:name=".receiver.AutoStart">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <service android:name=".network.GetInfoService"/>
-        <service android:name=".network.SaveInfoService"/>
-
         <receiver android:name=".network.GetInfoService$SyncOnConnectionAvailable"
-            android:enabled="false">
+                  android:enabled="false">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="40f18317fc14f66d7adefcb145acf0a22d207d05" />
+            android:value="40f18317fc14f66d7adefcb145acf0a22d207d05"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.data;
 
 import droidkit.content.BoolValue;
 import droidkit.content.IntValue;

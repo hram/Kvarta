@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
+import hram.kvarta.data.Account;
 import hram.kvarta.di.Injector;
 import hram.kvarta.network.AccountManager;
 import okio.Buffer;

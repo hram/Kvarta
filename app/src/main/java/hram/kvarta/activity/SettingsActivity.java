@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.activity;
 
 
 import android.annotation.TargetApi;
@@ -17,6 +17,9 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import hram.kvarta.view.NumberPickerPreference;
+import hram.kvarta.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

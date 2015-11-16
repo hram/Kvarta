@@ -13,7 +13,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.events.LoadDataEndedEvent;
 
 /**

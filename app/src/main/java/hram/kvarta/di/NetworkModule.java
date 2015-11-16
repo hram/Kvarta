@@ -9,7 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import hram.kvarta.OkClient;
+import hram.kvarta.network.OkClient;
 import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.ValuesManager;
 

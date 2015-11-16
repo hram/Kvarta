@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.network;
 
 import android.content.Context;
 

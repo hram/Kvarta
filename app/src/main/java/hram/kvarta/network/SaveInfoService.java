@@ -10,7 +10,7 @@ import com.squareup.otto.Bus;
 import droidkit.content.StringValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.Value;
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.SaveDataErrorEvent;
 import hram.kvarta.events.SaveDataStartedEvent;

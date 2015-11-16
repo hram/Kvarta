@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import droidkit.content.TypedBundle;
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.LoginActivity;
-import hram.kvarta.MainActivity;
+import hram.kvarta.activity.LoginActivity;
+import hram.kvarta.activity.MainActivity;
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.R;
 import hram.kvarta.di.Injector;

@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.alarm;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 import droidkit.util.Sequence;
+import hram.kvarta.R;
+import hram.kvarta.activity.MainActivity;
 
 /**
  * @author Evgeny Khramov

@@ -19,9 +19,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import droidkit.content.TypedBundle;
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
-import hram.kvarta.LoginActivity;
+import hram.kvarta.activity.LoginActivity;
 import hram.kvarta.R;
 
 import static android.support.test.espresso.Espresso.onView;

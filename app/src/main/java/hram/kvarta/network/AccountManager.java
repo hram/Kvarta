@@ -9,7 +9,7 @@ import com.squareup.okhttp.ResponseBody;
 import java.io.IOException;
 import java.net.URL;
 
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 
 /**
  * @author Evgeny Khramov

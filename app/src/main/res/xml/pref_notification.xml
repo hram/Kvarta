@@ -4,7 +4,7 @@
         android:title="@string/pref_title_enable_remind"
         android:summary="@string/pref_description_enable_remind"
         android:defaultValue="true" />
-    <hram.kvarta.NumberPickerPreference
+    <hram.kvarta.view.NumberPickerPreference
         android:key="remindDate"
         android:title="@string/pref_title_date"
         android:defaultValue="26"

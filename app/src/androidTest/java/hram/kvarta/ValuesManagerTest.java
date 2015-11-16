@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
 
+import hram.kvarta.data.Account;
 import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.ValuesManager;
 

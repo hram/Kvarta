@@ -1,4 +1,4 @@
-package hram.kvarta;
+package hram.kvarta.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

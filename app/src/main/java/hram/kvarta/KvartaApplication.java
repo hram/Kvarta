@@ -5,6 +5,7 @@ import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 
 import droidkit.content.TypedPrefs;
+import hram.kvarta.data.Settings;
 import hram.kvarta.di.Injector;
 import hram.kvarta.di.NetworkModule;
 import io.fabric.sdk.android.Fabric;

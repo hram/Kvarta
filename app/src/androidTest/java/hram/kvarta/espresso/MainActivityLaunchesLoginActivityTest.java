@@ -17,11 +17,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import hram.kvarta.Account;
+import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.LoginActivity;
-import hram.kvarta.MainActivity;
+import hram.kvarta.activity.LoginActivity;
+import hram.kvarta.activity.MainActivity;
 import hram.kvarta.R;
 
 import static android.support.test.espresso.Espresso.onView;
