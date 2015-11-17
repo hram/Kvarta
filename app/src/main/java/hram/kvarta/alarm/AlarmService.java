@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
@@ -30,7 +31,7 @@ public class AlarmService extends IntentService {
         }
     }
 
-    private void showNotification() {
+    public void showNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
@@ -46,5 +47,11 @@ public class AlarmService extends IntentService {
 
         NotificationManager ntfMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         ntfMan.notify(NOTIFICATION_ID, notification);
+    }
+
+    public void clearNotification() {
+        PendingIntent.getActivity(getApplicationContext(), 0, new Intent(getApplicationContext(), MainActivity.class), PendingIntent.FLAG_CANCEL_CURRENT).cancel();
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
     }
 }

@@ -73,6 +73,21 @@ public class AccountManagerTest {
     }
 
     @Test
+    public void testLoginFailed() throws MalformedURLException {
+        assertThat(mAccountManager.logIn(BuildConfig.tsgid, BuildConfig.accountid, "000", false), is(false));
+
+        Account account = new Account.Builder()
+                .accountId(BuildConfig.accountid)
+                .tsgId(BuildConfig.tsgid)
+                .password("000")
+                .demo(false)
+                .build(getContext());
+        assertThat(account, is(notNullValue()));
+
+        assertThat(mAccountManager.logIn(account), is(false));
+    }
+
+    @Test
     public void testLoginDemo() throws MalformedURLException {
         assertThat(mAccountManager.logIn("000000000", "000000000", "демо", true), is(true));
     }

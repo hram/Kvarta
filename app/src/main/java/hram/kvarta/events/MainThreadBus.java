@@ -4,11 +4,21 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 /**
  * @author Evgeny Khramov
  */
 public class MainThreadBus extends Bus {
+
+    public MainThreadBus() {
+        this(ThreadEnforcer.ANY);
+    }
+
+    public MainThreadBus(ThreadEnforcer enforcer) {
+        super(enforcer);
+    }
+
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
