@@ -76,6 +76,11 @@ public class MainActivityLaunchesLoginActivityMockTest {
     public void tearDown() {
     }
 
+    private void signIn() throws InterruptedException {
+        onView(withId(R.id.sign_in_button)).perform(click());
+        Thread.sleep(300);
+    }
+
     /**
      * @return The current context.
      */
@@ -105,9 +110,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
             onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
             onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
 
-            onView(withId(R.id.sign_in_button)).perform(click());
-
-            Thread.sleep(200);
+            signIn();
 
             assertThat(mAccount.isValid(), is(true));
             assertThat(mAccount.isDemo(), is(false));
@@ -146,8 +149,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
             mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
 
             onView(withId(R.id.sign_in_button_demo)).perform(click());
-
-            Thread.sleep(200);
+            Thread.sleep(300);
 
             assertThat(mAccount.isValid(), is(true));
             assertThat(mAccount.isDemo(), is(true));
@@ -184,7 +186,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
             onView(withId(R.id.accountid)).perform(replaceText(BuildConfig.accountid), closeSoftKeyboard());
             onView(withId(R.id.password)).perform(replaceText(BuildConfig.password), closeSoftKeyboard());
 
-            onView(withId(R.id.sign_in_button)).perform(click());
+            signIn();
 
             String errorString = getContext().getResources().getString(R.string.error_incorrect_password);
             onView(withId(R.id.password)).check(matches(hasErrorText(errorString)));
