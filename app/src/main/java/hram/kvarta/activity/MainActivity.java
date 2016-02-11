@@ -15,7 +15,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +28,13 @@ import com.squareup.otto.Subscribe;
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
 import droidkit.content.BoolValue;
+import droidkit.content.StringValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
 import droidkit.content.Value;
-import hram.kvarta.data.Account;
-import hram.kvarta.alarm.AlarmManager;
 import hram.kvarta.R;
+import hram.kvarta.alarm.AlarmManager;
+import hram.kvarta.data.Account;
 import hram.kvarta.data.Settings;
 import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.LoadDataEndedEvent;
@@ -154,11 +154,18 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
         //setTitle(getString(R.string.selected_configuration));
 
-        if (savedInstanceState == null) {
+        SavedInstanceArgs savedInstanceArgs;
+        if (savedInstanceState != null) {
+            savedInstanceArgs = TypedBundle.from(savedInstanceState, SavedInstanceArgs.class);
+        } else {
+            savedInstanceArgs = TypedBundle.from(new Bundle(), SavedInstanceArgs.class);
+        }
+
+        if (StringValue.EMPTY.equals(savedInstanceArgs.currentColdValue().get()) || StringValue.EMPTY.equals(savedInstanceArgs.currentHotValue().get())) {
             getInfo();
         } else {
-            displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), savedInstanceState.getString("current_hot_value"), savedInstanceState.getString("current_cold_value"));
-            showActionMenu(savedInstanceState.getBoolean("action_save_shown"));
+            displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), savedInstanceArgs.currentHotValue().get(), savedInstanceArgs.currentColdValue().get());
+            showActionMenu(savedInstanceArgs.actionSaveDisplayed().get());
         }
     }
 
@@ -210,11 +217,10 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (!TextUtils.isEmpty(mCurrentColdValue) && !TextUtils.isEmpty(mCurrentHotValue)) {
-            outState.putString("current_cold_value", mCurrentColdValue);
-            outState.putString("current_hot_value", mCurrentHotValue);
-            outState.putBoolean("action_save_shown", mActionSave.getVisibility() == View.VISIBLE);
-        }
+        SavedInstanceArgs savedInstanceArgs = TypedBundle.from(outState, SavedInstanceArgs.class);
+        savedInstanceArgs.currentHotValue().set(mCurrentHotValue);
+        savedInstanceArgs.currentColdValue().set(mCurrentColdValue);
+        savedInstanceArgs.actionSaveDisplayed().set(mActionSave.getVisibility() == View.VISIBLE);
     }
 
     @Override
@@ -529,5 +535,16 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     public interface Args {
         @Value
         BoolValue disableAnimation();
+    }
+
+    public interface SavedInstanceArgs {
+        @Value
+        StringValue currentHotValue();
+
+        @Value
+        StringValue currentColdValue();
+
+        @Value
+        BoolValue actionSaveDisplayed();
     }
 }

@@ -42,4 +42,7 @@ public interface Settings {
 
     @Value
     LongValue lastRebootTime();
+
+    @Value
+    StringValue bodyString();
 }

@@ -15,6 +15,10 @@ public class Account {
     private Settings mSettings;
     private Context mContext;
 
+    public Context getContext() {
+        return mContext;
+    }
+
     public String getTsgId() {
         return mSettings.tsgId().get();
     }

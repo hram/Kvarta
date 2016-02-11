@@ -13,7 +13,9 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
+import droidkit.content.TypedPrefs;
 import hram.kvarta.data.Account;
+import hram.kvarta.data.Settings;
 import hram.kvarta.events.LoadDataEndedEvent;
 
 /**
@@ -112,8 +114,10 @@ public class ValuesManager extends BaseManager {
             Response response = mClient.newCall(request).execute();
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
-            ResponseBody body = response.body();
-            Document doc = Jsoup.parse(body.string());
+            String body = response.body().string();
+            Document doc = Jsoup.parse(body);
+            Settings settings = TypedPrefs.from(account.getContext(), Settings.class);
+            settings.bodyString().set(body);
 
             mServicesCount = 0;
             Elements inputs = doc.select("input[name]");

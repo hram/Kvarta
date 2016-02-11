@@ -41,15 +41,15 @@ public class RoboValuesManagerTest {
 
         assertTrue(mAccountManager.logIn(mAccount));
 
-        mValuesManager = new ValuesManager(mAccount);
+        mValuesManager = new ValuesManager(2);
         assertNotNull(mValuesManager);
     }
 
     @Test
     public void testGetValues() throws Exception {
-        assertTrue(mValuesManager.getValues());
+        assertTrue(mValuesManager.getValues(mAccount));
 
-        assertEquals(mValuesManager.getHotValue(0), 124L);
-        assertEquals(mValuesManager.getColdValue(0), 221L);
+        assertEquals(mValuesManager.getValue(ValuesManager.WATER_HOT, 0), 124L);
+        assertEquals(mValuesManager.getValue(ValuesManager.WATER_COLD, 0), 221L);
     }
 }
