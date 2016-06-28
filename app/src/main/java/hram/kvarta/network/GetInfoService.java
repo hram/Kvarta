@@ -5,14 +5,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.squareup.otto.Bus;
+import org.greenrobot.eventbus.EventBus;
 
-import hram.kvarta.data.Account;
+import java.net.SocketTimeoutException;
+
 import hram.kvarta.BuildConfig;
-import hram.kvarta.events.BusProvider;
+import hram.kvarta.data.Account;
 import hram.kvarta.events.LoadDataErrorEvent;
 import hram.kvarta.events.LoadDataStartedEvent;
 import hram.kvarta.events.LogInErrorEvent;
+import hram.kvarta.events.NetworkErrorEvent;
 import hram.kvarta.util.AndroidComponentUtil;
 import timber.log.Timber;
 
@@ -32,7 +34,6 @@ public class GetInfoService extends IntentService {
     Account mAccount;
     AccountManager mAccountManager = new AccountManager();
     ValuesManager mValuesManager = new ValuesManager();
-    Bus bus = BusProvider.getInstance();
 
     public GetInfoService() {
         super(GetInfoService.class.getName());
@@ -42,36 +43,41 @@ public class GetInfoService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Timber.i("Starting sync...");
 
-        bus.post(new LoadDataStartedEvent());
+        EventBus.getDefault().post(new LoadDataStartedEvent());
 
         if (!NetworkUtil.isNetworkConnected(this)) {
             Timber.i("Sync canceled, connection not available");
-            bus.post(new LoadDataErrorEvent());
+            EventBus.getDefault().post(new LoadDataErrorEvent());
             AndroidComponentUtil.toggleComponent(this, SyncOnConnectionAvailable.class, true);
             return;
         }
 
         mAccount = new Account(this);
 
-        if (mValuesManager.getValues(mAccount)) {
-            bus.post(mValuesManager.createLoadDataEndedEvent());
-            return;
-        }
+        try {
+            if (mValuesManager.getValues(mAccount)) {
+                EventBus.getDefault().post(mValuesManager.createLoadDataEndedEvent());
+                return;
+            }
 
-        if(!mAccountManager.logIn(mAccount)){
-            bus.post(new LogInErrorEvent());
-            return;
-        }
+            if (!mAccountManager.logIn(mAccount)) {
+                EventBus.getDefault().post(new LogInErrorEvent());
+                return;
+            }
 
-        if(!mValuesManager.getValues(mAccount)){
-            bus.post(new LoadDataErrorEvent());
-            return;
-        }
+            if (!mValuesManager.getValues(mAccount)) {
+                EventBus.getDefault().post(new LoadDataErrorEvent());
+                return;
+            }
 
-        bus.post(mValuesManager.createLoadDataEndedEvent());
+            EventBus.getDefault().post(mValuesManager.createLoadDataEndedEvent());
+        } catch (SocketTimeoutException e) {
+            EventBus.getDefault().post(new NetworkErrorEvent());
+        }
     }
 
     public static class SyncOnConnectionAvailable extends BroadcastReceiver {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (NetworkUtil.isNetworkConnected(context)) {

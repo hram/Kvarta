@@ -18,8 +18,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
@@ -28,7 +29,6 @@ import droidkit.content.TypedBundle;
 import droidkit.content.Value;
 import hram.kvarta.R;
 import hram.kvarta.data.Account;
-import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.UserLoginEndedEvent;
 import hram.kvarta.events.UserLoginErrorEvent;
 import hram.kvarta.events.UserLoginStartedEvent;
@@ -64,8 +64,6 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     private Args mArgs;
-
-    Bus bus = BusProvider.getInstance();
 
     public static void start(Activity context) {
         context.startActivityForResult(new Intent(context, LoginActivity.class), LOGIN_REQUEST_CODE);
@@ -107,14 +105,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        bus.register(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        bus.unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick(R.id.sign_in_button)
@@ -268,18 +266,18 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void userLoginStarted(UserLoginStartedEvent event) {
         showProgress(true);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void userLoginEnded(UserLoginEndedEvent event) {
         setResult(RESULT_OK);
         finish();
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void userLoginError(UserLoginErrorEvent event) {
         showProgress(false);
         mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -287,6 +285,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public interface Args {
+
         @Value
         BoolValue toMockNetwork();
 

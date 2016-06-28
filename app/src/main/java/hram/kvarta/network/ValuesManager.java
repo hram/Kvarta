@@ -1,22 +1,22 @@
 package hram.kvarta.network;
 
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import droidkit.content.TypedPrefs;
 import hram.kvarta.data.Account;
 import hram.kvarta.data.Settings;
 import hram.kvarta.events.LoadDataEndedEvent;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * @author Evgeny Khramov
@@ -108,7 +108,7 @@ public class ValuesManager extends BaseManager {
         }
     }
 
-    public boolean getValues(Account account) {
+    public boolean getValues(Account account) throws SocketTimeoutException {
         try {
             Request request = new Request.Builder().url(createUrl("/voda.php?action=tenant")).build();
             Response response = mClient.newCall(request).execute();
@@ -154,7 +154,8 @@ public class ValuesManager extends BaseManager {
             account.setLastTime(item.text());
 
             setValues(links);
-
+        } catch (SocketTimeoutException e) {
+            throw e;
         } catch (IOException e) {
             return false;
         } catch (IndexOutOfBoundsException iobe) {
@@ -168,7 +169,7 @@ public class ValuesManager extends BaseManager {
     public boolean saveValues(Account account, String newValueHot, String newValueCold) {
         try {
 
-            RequestBody formBody = new FormEncodingBuilder()
+            RequestBody formBody = new FormBody.Builder()
                     .add("action", "tenant")
                     .add("subaction", "tenantedit")
                     .add("service1counter1", newValueCold)

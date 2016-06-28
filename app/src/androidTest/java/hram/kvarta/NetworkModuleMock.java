@@ -2,10 +2,6 @@ package hram.kvarta;
 
 import android.content.Context;
 
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -13,6 +9,9 @@ import dagger.Provides;
 import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.OkClient;
 import hram.kvarta.network.ValuesManager;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
 
 /**
  * @author Evgeny Khramov
@@ -20,8 +19,8 @@ import hram.kvarta.network.ValuesManager;
 @Module(injects = {AccountManager.class, ValuesManager.class})
 public class NetworkModuleMock {
 
-    private Context mContext;
-    private MockWebServer mServer;
+    private final Context mContext;
+    private final MockWebServer mServer;
 
     public NetworkModuleMock(Context context, MockWebServer server) {
         mContext = context;
@@ -30,12 +29,14 @@ public class NetworkModuleMock {
 
     @Provides
     @Singleton
+    @SuppressWarnings("unused")
     OkHttpClient provideClient() {
         return OkClient.create(mContext);
     }
 
     @Provides
     @Singleton
+    @SuppressWarnings("unused")
     HttpUrl provideUrl() {
         return mServer.url("/");
     }

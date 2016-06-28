@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 
 import hram.kvarta.data.Account;
 import hram.kvarta.network.AccountManager;
@@ -28,9 +29,8 @@ import static org.hamcrest.Matchers.notNullValue;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ValuesManagerTest {
-    SharedPreferences mPreferences;
-    Account mAccount;
-    AccountManager mAccountManager;
+
+    private Account mAccount;
 
     /**
      * @return The current context.
@@ -45,7 +45,9 @@ public class ValuesManagerTest {
         assertThat(InstrumentationRegistry.getContext(), is(notNullValue()));
         assertThat(InstrumentationRegistry.getTargetContext(), is(notNullValue()));
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        assertThat(preferences, is(notNullValue()));
+
         mAccount = new Account.Builder()
                 .accountId(BuildConfig.accountid)
                 .tsgId(BuildConfig.tsgid)
@@ -54,10 +56,10 @@ public class ValuesManagerTest {
                 .build(getContext());
         assertThat(mAccount, is(notNullValue()));
 
-        mAccountManager = new AccountManager();
-        assertThat(mAccountManager, is(notNullValue()));
+        AccountManager accountManager = new AccountManager();
+        assertThat(accountManager, is(notNullValue()));
 
-        assertThat(mAccountManager.logIn(mAccount), is(true));
+        assertThat(accountManager.logIn(mAccount), is(true));
     }
 
     @After
@@ -65,13 +67,13 @@ public class ValuesManagerTest {
     }
 
     @Test
-    public void testGetValues() {
+    public void testGetValues() throws SocketTimeoutException {
         ValuesManager valuesManager = new ValuesManager();
         assertThat(valuesManager, is(notNullValue()));
 
         assertThat(valuesManager.getValues(mAccount), is(true));
 
-        assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(124L));
-        assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(221L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_HOT), is(152L));
+        assertThat(valuesManager.getValue(ValuesManager.WATER_COLD), is(271L));
     }
 }

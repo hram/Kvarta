@@ -4,15 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,24 +21,28 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import droidkit.content.TypedBundle;
-import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.activity.LoginActivity;
-import hram.kvarta.activity.MainActivity;
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.R;
+import hram.kvarta.activity.LoginActivity;
+import hram.kvarta.activity.MainActivity;
+import hram.kvarta.data.Account;
 import hram.kvarta.di.Injector;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import okio.Buffer;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static hram.kvarta.espresso.CustomViewMatchers.hasErrorText;
@@ -53,7 +56,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @LargeTest
 public class MainActivityLaunchesLoginActivityMockTest {
 
-    Account mAccount;
+    private Account mAccount;
 
     @Rule
     public final MockWebServer mServer = new MockWebServer();
@@ -90,6 +93,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
 
     /**
      * При первом запуске должно открываться окно авторизации. Все поля пустые.
+     *
      * @throws Exception
      */
     @Test
@@ -132,6 +136,7 @@ public class MainActivityLaunchesLoginActivityMockTest {
 
     /**
      * При первом запуске должно открываться окно авторизации. Все поля пустые.
+     *
      * @throws Exception
      */
     @Test
@@ -192,7 +197,50 @@ public class MainActivityLaunchesLoginActivityMockTest {
             onView(withId(R.id.password)).check(matches(hasErrorText(errorString)));
 
             assertThat(mServer.getRequestCount(), is(2));
-        }finally {
+        } finally {
+            Intents.release();
+        }
+    }
+
+    /**
+     * При первом запуске должно открываться окно авторизации. Все поля пустые.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testBackAfterSuccessLogin() throws Exception {
+        try {
+            mAccount.reset();
+            Intents.init();
+            rule.launchActivity(new Intent());
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()));
+
+            mServer.enqueue(getResponse("voda_action=login.txt"));
+            mServer.enqueue(getResponse("login_post_response.txt"));
+            mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
+            mServer.enqueue(getResponse("demo/voda_action=tenant.txt"));
+
+            onView(withId(R.id.sign_in_button_demo)).perform(click());
+            Thread.sleep(300);
+
+            assertThat(mAccount.isValid(), is(true));
+            assertThat(mAccount.isDemo(), is(true));
+            assertThat(mAccount.getUserInfo(), is(Constants.DEMO_NAME));
+            assertThat(mAccount.getAddress(), is(Constants.DEMO_ADDR));
+
+            onView(withId(R.id.tvAddress)).check(matches(withText(Constants.DEMO_ADDR)));
+            onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.DEMO_NAME)));
+
+            assertThat(mServer.getRequestCount(), is(4));
+
+            try {
+                onView(isRoot()).perform(pressBack());
+                Assert.fail();
+            } catch (NoActivityResumedException e) {
+                // do nothing
+            }
+        } finally {
             Intents.release();
         }
     }

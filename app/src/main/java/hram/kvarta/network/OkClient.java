@@ -2,26 +2,39 @@ package hram.kvarta.network;
 
 import android.content.Context;
 
-import com.squareup.okhttp.OkHttpClient;
-
 import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.util.concurrent.TimeUnit;
+
+import hram.kvarta.BuildConfig;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author Evgeny Hramov
  */
 public class OkClient {
+
+    public static final OkHttpClient CLIENT;
+
+    static {
+        final OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new InterceptorWin1251())
+                .cookieJar(new JavaNetCookieJar(CookieManager.getDefault()));
+
+        if (BuildConfig.DEBUG) {
+            final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addNetworkInterceptor(logging);
+        }
+
+        CLIENT = builder.build();
+    }
+
     public static OkHttpClient create(Context context) {
-        OkHttpClient client = new OkHttpClient();
-
-        client.setConnectTimeout(10, TimeUnit.SECONDS);
-        client.setWriteTimeout(10, TimeUnit.SECONDS);
-        client.setReadTimeout(30, TimeUnit.SECONDS);
-        client.networkInterceptors().add(new InterceptorWin1251());
-
-        client.setCookieHandler(new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL));
-
-        return client;
+        return CLIENT;
     }
 }

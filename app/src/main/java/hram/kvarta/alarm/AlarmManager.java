@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import droidkit.content.TypedPrefs;
 import hram.kvarta.data.Settings;
@@ -32,9 +33,9 @@ public class AlarmManager {
         final Intent intent = new Intent(mContext, AlarmService.class);
         PendingIntent pendingIntent = PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Timber.d("Enable remind: " + mSettings.enableRemind().get());
-        Timber.d("Remind date: " + mSettings.remindDate().get());
-        Timber.d("New alarm time: " + new SimpleDateFormat("dd.MM hh.mm").format(triggerAtMillis));
+        Timber.d("Enable remind: %s", mSettings.enableRemind().get());
+        Timber.d("Remind date: %s", mSettings.remindDate().get());
+        Timber.d("New alarm time: %s", new SimpleDateFormat("dd.MM hh.mm", Locale.US).format(triggerAtMillis));
 
         if (mSettings.enableRemind().get()) {
             am.set(android.app.AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);

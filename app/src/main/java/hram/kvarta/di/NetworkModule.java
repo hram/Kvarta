@@ -2,16 +2,15 @@ package hram.kvarta.di;
 
 import android.content.Context;
 
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import hram.kvarta.network.OkClient;
 import hram.kvarta.network.AccountManager;
+import hram.kvarta.network.OkClient;
 import hram.kvarta.network.ValuesManager;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 
 /**
  * @author Evgeny Khramov

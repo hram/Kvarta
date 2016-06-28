@@ -15,4 +15,7 @@ public class Constants {
 
     public static final int VALUES_ID_HOT_DЕМО = hram.kvarta.test.R.array.hotValuesDemo;
     public static final int VALUES_ID_COLD_DЕМО = hram.kvarta.test.R.array.coldValuesDemo;
+
+    public static final int VALUES_ID_HOT_UP = hram.kvarta.test.R.array.hotValuesUp;
+    public static final int VALUES_ID_COLD_DOWN = hram.kvarta.test.R.array.coldValuesDown;
 }

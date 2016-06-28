@@ -5,13 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.squareup.otto.Bus;
+import org.greenrobot.eventbus.EventBus;
 
 import droidkit.content.StringValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.Value;
 import hram.kvarta.data.Account;
-import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.SaveDataErrorEvent;
 import hram.kvarta.events.SaveDataStartedEvent;
 import hram.kvarta.util.AndroidComponentUtil;
@@ -37,7 +36,6 @@ public class SaveInfoService extends IntentService {
     }
 
     private ValuesManager mValuesManager = new ValuesManager(2);
-    private Bus bus = BusProvider.getInstance();
 
     public SaveInfoService() {
         super(SaveInfoService.class.getName());
@@ -47,16 +45,16 @@ public class SaveInfoService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Timber.d("Старт сервиса сохранеия значений");
 
-        bus.post(new SaveDataStartedEvent());
+        EventBus.getDefault().post(new SaveDataStartedEvent());
 
         Args args = TypedBundle.from(intent.getExtras(), Args.class);
         if (!NetworkUtil.isNetworkConnected(this)) {
             Timber.i("Sync canceled, connection not available");
-            bus.post(new SaveDataErrorEvent());
+            EventBus.getDefault().post(new SaveDataErrorEvent());
             return;
         }
 
-        bus.post(mValuesManager.saveValues(new Account(this), args.newValueHot().get(), args.newValueCold().get()) ? mValuesManager.createLoadDataEndedEvent() : new SaveDataErrorEvent());
+        EventBus.getDefault().post(mValuesManager.saveValues(new Account(this), args.newValueHot().get(), args.newValueCold().get()) ? mValuesManager.createLoadDataEndedEvent() : new SaveDataErrorEvent());
     }
 
     interface Args {

@@ -7,10 +7,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-import com.squareup.okhttp.mockwebserver.RecordedRequest;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +20,9 @@ import java.net.MalformedURLException;
 import hram.kvarta.data.Account;
 import hram.kvarta.di.Injector;
 import hram.kvarta.network.ValuesManager;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import okio.Buffer;
 
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
@@ -36,10 +35,11 @@ import static org.hamcrest.Matchers.notNullValue;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ValuesManagerMockTest {
+
     @Rule
     public final MockWebServer mServer = new MockWebServer();
-    SharedPreferences mPreferences;
-    Account mAccount;
+
+    private Account mAccount;
 
     /**
      * @return The current context.
@@ -56,7 +56,9 @@ public class ValuesManagerMockTest {
 
         Injector.init(new NetworkModuleMock(getContext(), mServer));
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        assertThat(preferences, is(notNullValue()));
+
         mAccount = new Account.Builder()
                 .accountId(BuildConfig.accountid)
                 .tsgId(BuildConfig.tsgid)

@@ -10,9 +10,6 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.NumberPicker;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -24,15 +21,17 @@ import java.io.InputStream;
 
 import droidkit.content.TypedBundle;
 import droidkit.content.TypedPrefs;
-import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.activity.MainActivity;
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.R;
-import hram.kvarta.data.Settings;
+import hram.kvarta.activity.MainActivity;
 import hram.kvarta.activity.SettingsActivity;
+import hram.kvarta.data.Account;
+import hram.kvarta.data.Settings;
 import hram.kvarta.di.Injector;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import okio.Buffer;
 
 import static android.support.test.espresso.Espresso.onData;

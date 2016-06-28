@@ -1,14 +1,13 @@
 package hram.kvarta.network;
 
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.inject.Inject;
 
 import hram.kvarta.di.Injector;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 
 /**
  * @author Evgeny Khramov

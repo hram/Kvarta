@@ -22,6 +22,7 @@ public class CustomViewMatchers {
 
     /**
      * Проверяет EditText на то что текст пустой
+     *
      * @return true если текст не задан
      */
     public static Matcher<View> isEmptyEditText() {
@@ -44,6 +45,7 @@ public class CustomViewMatchers {
         return new TypeSafeMatcher<View>() {
             private int actualValue = -1;
             private int expectedValue;
+
             @Override
             public boolean matchesSafely(View view) {
                 if (!(view instanceof NumberPicker)) {
@@ -61,11 +63,18 @@ public class CustomViewMatchers {
         };
     }
 
+    /**
+     * Проверяет отображается ли ошибка
+     *
+     * @param expectedError текст ошибки
+     * @return true если отображается ошибка
+     */
     public static Matcher<? super View> hasErrorText(String expectedError) {
         return new ErrorTextMatcher(expectedError);
     }
 
     private static class ErrorTextMatcher extends TypeSafeMatcher<View> {
+
         private final String expectedError;
 
         private ErrorTextMatcher(String expectedError) {
@@ -96,11 +105,11 @@ public class CustomViewMatchers {
 
             @Override
             public boolean matchesSafely(View view) {
-                if (!(view instanceof ImageView)){
+                if (!(view instanceof ImageView)) {
                     return false;
                 }
                 ImageView imageView = (ImageView) view;
-                if (expectedId < 0){
+                if (expectedId < 0) {
                     return imageView.getDrawable() == null;
                 }
                 Resources resources = view.getContext().getResources();

@@ -1,237 +1,271 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:fab="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                tools:context="hram.kvarta.activity.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="hram.kvarta.activity.MainActivity">
 
-    <RelativeLayout android:id="@+id/layout_progress"
+    <RelativeLayout
+        android:id="@+id/layout_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/login_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_network_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <ProgressBar android:id="@+id/login_progress"
-            style="?android:attr/progressBarStyleLarge"
+        <TextView
+            android:id="@+id/errorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginLeft="48dp"
+            android:layout_marginRight="48dp"
+            android:gravity="center"
+            android:text="@string/error_try_again" />
 
+        <com.devspark.robototextview.widget.RobotoButton
+            android:id="@+id/button_try_again"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/errorText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/action_reload"
+            app:typeface="roboto_condensed_regular" />
     </RelativeLayout>
 
-    <LinearLayout android:id="@+id/layout_main"
+    <LinearLayout
+        android:id="@+id/layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-		<LinearLayout android:id="@+id/layout_usetInfo"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:paddingTop="8dp"
-			android:paddingBottom="8dp"
-			android:orientation="vertical">
-
-			<com.devspark.robototextview.widget.RobotoTextView
-				android:id="@+id/tvAddress"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="Large Text"
-				android:textSize="16sp"
-				app:typeface="roboto_condensed_regular"/>
-
-			<com.devspark.robototextview.widget.RobotoTextView
-				android:id="@+id/tvUserInfo"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="Large Text"
-				android:textSize="14sp"
-                android:paddingTop="8dp"
-				app:typeface="roboto_condensed_regular"/>
-
-		</LinearLayout>		
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/layout_usetInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/tvAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Large Text"
+                android:textSize="16sp"
+                app:typeface="roboto_condensed_regular" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/tvUserInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:text="Large Text"
+                android:textSize="14sp"
+                app:typeface="roboto_condensed_regular" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutCold"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/layoutCold"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp">
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Х"
                     android:layout_above="@+id/textView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="8dp"
+                    android:text="Х"
                     app:typeface="roboto_condensed_light"
-                    tools:ignore="HardcodedText"/>
+                    tools:ignore="HardcodedText" />
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="В"
-                    android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="В"
                     app:typeface="roboto_condensed_light"
-                    tools:ignore="HardcodedText"/>
+                    tools:ignore="HardcodedText" />
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="С"
                     android:layout_below="@+id/textView"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
+                    android:text="С"
                     app:typeface="roboto_condensed_light"
-                    tools:ignore="HardcodedText"/>
+                    tools:ignore="HardcodedText" />
 
             </RelativeLayout>
 
             <NumberPicker
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/numberPickerC5"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerC4"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerC3"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerC2"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerC1"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layoutHot"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp">
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Г"
                     android:layout_above="@+id/textView2"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="8dp"
+                    android:text="Г"
                     app:typeface="roboto_condensed_light"
-                    tools:ignore="HardcodedText"/>
+                    tools:ignore="HardcodedText" />
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:id="@+id/textView2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="В"
-                    android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="В"
                     app:typeface="roboto_condensed_light"
-                    tools:ignore="HardcodedText"/>
+                    tools:ignore="HardcodedText" />
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="С"
                     android:layout_below="@+id/textView2"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
+                    android:text="С"
                     app:typeface="roboto_condensed_light"
-                    tools:ignore="HardcodedText"/>
+                    tools:ignore="HardcodedText" />
 
             </RelativeLayout>
 
             <NumberPicker
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/numberPickerH5"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerH4"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerH3"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerH2"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-
-            <NumberPicker
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
+
+            <NumberPicker
                 android:id="@+id/numberPickerH1"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="70dp">
 
-            <ImageView android:id="@+id/flash"
+            <ImageView
+                android:id="@+id/flash"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:src="@drawable/flash_off" />
@@ -240,14 +274,15 @@
                 android:id="@+id/action_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                fab:fab_plusIconColor="@color/white"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:visibility="gone"
                 fab:fab_colorNormal="@color/pink"
                 fab:fab_colorPressed="@color/pink_pressed"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"/>
+                fab:fab_plusIconColor="@color/white" />
 
         </RelativeLayout>
 

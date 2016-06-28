@@ -10,11 +10,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +25,9 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import droidkit.annotation.InjectView;
 import droidkit.annotation.OnClick;
@@ -36,10 +40,10 @@ import hram.kvarta.R;
 import hram.kvarta.alarm.AlarmManager;
 import hram.kvarta.data.Account;
 import hram.kvarta.data.Settings;
-import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.LoadDataEndedEvent;
 import hram.kvarta.events.LoadDataStartedEvent;
 import hram.kvarta.events.LogInErrorEvent;
+import hram.kvarta.events.NetworkErrorEvent;
 import hram.kvarta.events.SaveDataErrorEvent;
 import hram.kvarta.events.SaveDataStartedEvent;
 import hram.kvarta.network.GetInfoService;
@@ -53,74 +57,86 @@ import static android.Manifest.permission.CAMERA;
  */
 public class MainActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
-    //private final static String TAG = "kvarta";
     private static final int REQUEST_CAMERA = 1;
-    Settings mSettings;
-    Account mAccount;
+    private Settings mSettings;
+    private Account mAccount;
     private AlarmManager mAlarmManager;
     private Args mArgs;
 
-    @InjectView(R.id.layout_progress)
-    View mLayoutProgress;
-
-    @InjectView(R.id.layout_main)
-    View mLayoutMain;
-
     @InjectView(R.id.layout_usetInfo)
-    View mLayoutUsetInfo;
+    private View mLayoutUsetInfo;
 
     @InjectView(R.id.tvAddress)
-    TextView mAddress;
+    private TextView mAddress;
 
     @InjectView(R.id.tvUserInfo)
-    TextView mUserInfo;
+    private TextView mUserInfo;
 
     @InjectView(R.id.numberPickerC5)
-    NumberPicker mNPC5;
+    private NumberPicker mNPC5;
 
     @InjectView(R.id.numberPickerC4)
-    NumberPicker mNPC4;
+    private NumberPicker mNPC4;
 
     @InjectView(R.id.numberPickerC3)
-    NumberPicker mNPC3;
+    private NumberPicker mNPC3;
 
     @InjectView(R.id.numberPickerC2)
-    NumberPicker mNPC2;
+    private NumberPicker mNPC2;
 
     @InjectView(R.id.numberPickerC1)
-    NumberPicker mNPC1;
+    private NumberPicker mNPC1;
 
     @InjectView(R.id.numberPickerH5)
-    NumberPicker mNPH5;
+    private NumberPicker mNPH5;
 
     @InjectView(R.id.numberPickerH4)
-    NumberPicker mNPH4;
+    private NumberPicker mNPH4;
 
     @InjectView(R.id.numberPickerH3)
-    NumberPicker mNPH3;
+    private NumberPicker mNPH3;
 
     @InjectView(R.id.numberPickerH2)
-    NumberPicker mNPH2;
+    private NumberPicker mNPH2;
 
     @InjectView(R.id.numberPickerH1)
-    NumberPicker mNPH1;
+    private NumberPicker mNPH1;
 
     @InjectView(R.id.flash)
-    ImageView mFlash;
+    private ImageView mFlash;
 
     @InjectView(R.id.action_save)
-    View mActionSave;
+    private View mActionSave;
 
     private String mNewValueHot, mNewValueCold;
     private Camera mCamera;
     private String mCurrentHotValue;
     private String mCurrentColdValue;
-    Bus bus = BusProvider.getInstance();
+
+    private int[] mLayoutIds = new int[]{R.id.layout_progress, R.id.layout_main, R.id.layout_network_error};
+    private SparseArray<View> mLayouts = new SparseArray<>();
+    private int mShowedLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        for (int id : mLayoutIds) {
+            final View view = findViewById(id);
+            if (view == null) {
+                continue;
+            }
+
+            mLayouts.put(id, view);
+        }
+
+        if (getIntent().getExtras() != null) {
+            mArgs = TypedBundle.from(getIntent().getExtras(), Args.class);
+        } else {
+            mArgs = TypedBundle.from(new Bundle(), Args.class);
+        }
+        showLayout(R.id.layout_progress);
 
         initNumberPicker(mNPC1);
         initNumberPicker(mNPC2);
@@ -144,12 +160,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         mAccount = new Account(this);
         mAlarmManager = new AlarmManager(getApplicationContext());
 
-        if (getIntent().getExtras() != null) {
-            mArgs = TypedBundle.from(getIntent().getExtras(), Args.class);
-        } else {
-            mArgs = TypedBundle.from(new Bundle(), Args.class);
-        }
-
         setTitle(R.string.title_activity_main);
 
         //setTitle(getString(R.string.selected_configuration));
@@ -161,11 +171,15 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
             savedInstanceArgs = TypedBundle.from(new Bundle(), SavedInstanceArgs.class);
         }
 
-        if (StringValue.EMPTY.equals(savedInstanceArgs.currentColdValue().get()) || StringValue.EMPTY.equals(savedInstanceArgs.currentHotValue().get())) {
-            getInfo();
-        } else {
+
+        if (!TextUtils.isEmpty(savedInstanceArgs.newColdValue().get()) && !TextUtils.isEmpty(savedInstanceArgs.newHotValue().get())) {
+            displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), savedInstanceArgs.newHotValue().get(), savedInstanceArgs.newColdValue().get());
+            showActionMenu(savedInstanceArgs.actionSaveDisplayed().get());
+        } else if (!TextUtils.isEmpty(savedInstanceArgs.currentColdValue().get()) && !TextUtils.isEmpty(savedInstanceArgs.currentHotValue().get())) {
             displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), savedInstanceArgs.currentHotValue().get(), savedInstanceArgs.currentColdValue().get());
             showActionMenu(savedInstanceArgs.actionSaveDisplayed().get());
+        } else {
+            getInfo();
         }
     }
 
@@ -178,10 +192,15 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-
-        bus.register(this);
 
         mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
         mAlarmManager.setAlarm();
@@ -192,10 +211,10 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
 
-        bus.unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -217,9 +236,14 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        SavedInstanceArgs savedInstanceArgs = TypedBundle.from(outState, SavedInstanceArgs.class);
+        mNewValueHot = "" + mNPH5.getValue() + mNPH4.getValue() + mNPH3.getValue() + mNPH2.getValue() + mNPH1.getValue();
+        mNewValueCold = "" + mNPC5.getValue() + mNPC4.getValue() + mNPC3.getValue() + mNPC2.getValue() + mNPC1.getValue();
+
+        final SavedInstanceArgs savedInstanceArgs = TypedBundle.from(outState, SavedInstanceArgs.class);
         savedInstanceArgs.currentHotValue().set(mCurrentHotValue);
         savedInstanceArgs.currentColdValue().set(mCurrentColdValue);
+        savedInstanceArgs.newHotValue().set(mNewValueHot);
+        savedInstanceArgs.newColdValue().set(mNewValueCold);
         savedInstanceArgs.actionSaveDisplayed().set(mActionSave.getVisibility() == View.VISIBLE);
     }
 
@@ -247,42 +271,52 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+    private void showLayout(int layoutId) {
+        if(mShowedLayout == layoutId){
+            return;
+        }
+
         if (!mArgs.disableAnimation().get() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            for (int i = 0; i < mLayouts.size(); i++) {
+                int key = mLayouts.keyAt(i);
+                // get the object by the key.
+                final View view = mLayouts.get(key);
 
-            mLayoutMain.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLayoutMain.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLayoutMain.setVisibility(show ? View.GONE : View.VISIBLE);
+                if (key == layoutId) {
+                    view.setVisibility(View.VISIBLE);
+                    view.animate().setDuration(shortAnimTime).alpha(1).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            view.setVisibility(View.VISIBLE);
+                        }
+                    });
+                } else {
+                    view.setVisibility(View.GONE);
+                    view.animate().setDuration(shortAnimTime).alpha(0).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            view.setVisibility(View.GONE);
+                        }
+                    });
                 }
-            });
-
-            mLayoutProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLayoutProgress.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLayoutProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+            }
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mLayoutProgress.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLayoutMain.setVisibility(show ? View.GONE : View.VISIBLE);
+
+            for (int i = 0; i < mLayouts.size(); i++) {
+                int key = mLayouts.keyAt(i);
+                // get the object by the key.
+                View view = mLayouts.get(key);
+                if (key == layoutId) {
+                    view.setVisibility(View.VISIBLE);
+                } else {
+                    view.setVisibility(View.GONE);
+                }
+            }
         }
 
-        if (show) {
-            showActionMenu(false);
-        }
+        mShowedLayout = layoutId;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -301,14 +335,14 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         }
     }
 
-    private void initNumberPicker(NumberPicker picker) {
+    private void initNumberPicker(@NonNull NumberPicker picker) {
         picker.setMinValue(0);
         picker.setMaxValue(9);
         picker.setOnValueChangedListener(this);
         picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
     }
 
-    private void setDividerColor(NumberPicker picker, int color) {
+    private void setDividerColor(@NonNull NumberPicker picker, @ColorInt int color) {
 
         java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
         for (java.lang.reflect.Field pf : pickerFields) {
@@ -350,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
      * @param currentHotValue  новые значения хорячей воды
      * @param currentColdValue новые значения ходолной воды
      */
-    private void displayCurrentState(String address, String userInfo, String currentHotValue, String currentColdValue) {
+    private void displayCurrentState(String address, String userInfo, @NonNull String currentHotValue, @NonNull String currentColdValue) {
         mAddress.setText(address);
         mUserInfo.setText(userInfo);
 
@@ -397,13 +431,23 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
                     break;
             }
         }
+
+        showLayout(R.id.layout_main);
+        showActionMenu(false);
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.flash)
     public void onFlashViewClick() {
         if (mayCreateCamera()) {
             cameraOnOff();
         }
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.button_try_again)
+    public void onTryAgainViewClick() {
+        getInfo();
     }
 
     private void cameraOnOff() {
@@ -444,25 +488,26 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         }).show();
     }
 
+    @SuppressWarnings("unused")
     @OnClick(R.id.action_save)
     public void onActionSaveClick() {
         startSaveInfoTask();
     }
 
     private void startGetInfoTask() {
-        showProgress(true);
+        showLayout(R.id.layout_progress);
         startService(GetInfoService.getStartIntent(this));
     }
 
     private void startSaveInfoTask() {
         mNewValueHot = "" + mNPH5.getValue() + mNPH4.getValue() + mNPH3.getValue() + mNPH2.getValue() + mNPH1.getValue();
         mNewValueCold = "" + mNPC5.getValue() + mNPC4.getValue() + mNPC3.getValue() + mNPC2.getValue() + mNPC1.getValue();
-        showProgress(true);
+        showLayout(R.id.layout_progress);
         startService(SaveInfoService.getStartIntent(this, mNewValueHot, mNewValueCold));
     }
 
     @Override
-    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+    public void onValueChange(@NonNull NumberPicker picker, int oldVal, int newVal) {
         if (mActionSave.getVisibility() != View.VISIBLE) {
             showActionMenu(true);
         }
@@ -506,43 +551,61 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
         }
     }
 
-    @Subscribe
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void loadDataStarted(LoadDataStartedEvent event) {
-        showProgress(true);
+        showLayout(R.id.layout_progress);
     }
 
-    @Subscribe
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void saveDataStarted(SaveDataStartedEvent event) {
-        showProgress(true);
+        showLayout(R.id.layout_progress);
     }
 
-    @Subscribe
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void loadDataEnded(LoadDataEndedEvent event) {
         displayCurrentState(mAccount.getAddress(), mAccount.getUserInfo(), "" + event.getValue(ValuesManager.WATER_HOT), "" + event.getValue(ValuesManager.WATER_COLD));
-        showProgress(false);
     }
 
-    @Subscribe
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void logInError(LogInErrorEvent event) {
         LoginActivity.start(this);
     }
 
-    @Subscribe
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void networkError(NetworkErrorEvent event) {
+        showLayout(R.id.layout_network_error);
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void saveDataError(SaveDataErrorEvent event) {
         LoginActivity.start(this);
     }
 
     public interface Args {
+
         @Value
         BoolValue disableAnimation();
     }
 
     public interface SavedInstanceArgs {
+
         @Value
         StringValue currentHotValue();
 
         @Value
         StringValue currentColdValue();
+
+        @Value
+        StringValue newHotValue();
+
+        @Value
+        StringValue newColdValue();
 
         @Value
         BoolValue actionSaveDisplayed();

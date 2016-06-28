@@ -5,14 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.squareup.otto.Bus;
+import org.greenrobot.eventbus.EventBus;
 
 import droidkit.content.BoolValue;
 import droidkit.content.StringValue;
 import droidkit.content.TypedBundle;
 import droidkit.content.Value;
 import hram.kvarta.data.Account;
-import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.UserLoginEndedEvent;
 import hram.kvarta.events.UserLoginErrorEvent;
 import hram.kvarta.events.UserLoginStartedEvent;
@@ -47,8 +46,6 @@ public class UserLoginService extends IntentService {
         return intent;
     }
 
-    private Bus bus = BusProvider.getInstance();
-
     public UserLoginService() {
         super(UserLoginService.class.getName());
     }
@@ -57,7 +54,7 @@ public class UserLoginService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Timber.i("Старт авторизации");
 
-        bus.post(new UserLoginStartedEvent());
+        EventBus.getDefault().post(new UserLoginStartedEvent());
 /*
         if (mArgs.toMockNetwork().get()) {
             try {
@@ -70,12 +67,12 @@ public class UserLoginService extends IntentService {
         Args args = TypedBundle.from(intent.getExtras(), Args.class);
         if (!NetworkUtil.isNetworkConnected(this)) {
             Timber.i("Login canceled, connection not available");
-            bus.post(new UserLoginErrorEvent());
+            EventBus.getDefault().post(new UserLoginErrorEvent());
             return;
         }
 
         if(!new AccountManager().logIn(args.tsgID().get(), args.accountID().get(), args.password().get(), args.demo().get())){
-            bus.post(new UserLoginErrorEvent());
+            EventBus.getDefault().post(new UserLoginErrorEvent());
             return;
         }
 
@@ -86,7 +83,7 @@ public class UserLoginService extends IntentService {
                 .demo(args.demo().get())
                 .build(getApplicationContext());
 
-        bus.post(new UserLoginEndedEvent());
+        EventBus.getDefault().post(new UserLoginEndedEvent());
     }
 
     interface Args {

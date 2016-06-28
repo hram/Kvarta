@@ -3,6 +3,7 @@ package hram.kvarta.espresso;
 /**
  * @author Evgeny Khramov
  */
+
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.support.test.espresso.UiController;
@@ -17,6 +18,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
  * An Espresso ViewAction that changes the orientation of the screen
  */
 public class OrientationChangeAction implements ViewAction {
+
     private final int orientation;
 
     private OrientationChangeAction(int orientation) {

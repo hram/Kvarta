@@ -5,11 +5,8 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ServiceTestCase;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,12 +18,13 @@ import java.io.InputStream;
 
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.di.Injector;
-import hram.kvarta.events.BusProvider;
 import hram.kvarta.events.LoadDataEndedEvent;
 import hram.kvarta.events.LoadDataErrorEvent;
 import hram.kvarta.events.LoadDataStartedEvent;
 import hram.kvarta.events.LogInErrorEvent;
 import hram.kvarta.network.GetInfoService;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import okio.Buffer;
 
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
@@ -39,7 +37,6 @@ import static org.hamcrest.Matchers.notNullValue;
 @RunWith(AndroidJUnit4.class)
 public class GetInfoServiceTest extends ServiceTestCase<GetInfoService> {
 
-    private static final Bus bus = BusProvider.getInstance();
     private boolean loadDataStarted, loadDataEnded, loadDataError, logInError;
 
     @Rule
@@ -51,7 +48,7 @@ public class GetInfoServiceTest extends ServiceTestCase<GetInfoService> {
 
     @Before
     public void setUp() throws Exception {
-        bus.register(this);
+        EventBus.getDefault().register(this);
         assertThat(InstrumentationRegistry.getContext(), is(notNullValue()));
         assertThat(InstrumentationRegistry.getTargetContext(), is(notNullValue()));
         setContext(InstrumentationRegistry.getTargetContext());
@@ -62,7 +59,7 @@ public class GetInfoServiceTest extends ServiceTestCase<GetInfoService> {
 
     @After
     public void tearDown() {
-        bus.unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Test

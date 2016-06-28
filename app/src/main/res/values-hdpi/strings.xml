@@ -1,3 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/selected_configuration">
     <string name="selected_configuration" translatable="false">hdpi</string>
 </resources>

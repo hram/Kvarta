@@ -2,20 +2,17 @@ package hram.kvarta.espresso;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,14 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import droidkit.content.TypedBundle;
-import hram.kvarta.data.Account;
 import hram.kvarta.BuildConfig;
 import hram.kvarta.Constants;
-import hram.kvarta.activity.LoginActivity;
-import hram.kvarta.activity.MainActivity;
 import hram.kvarta.NetworkModuleMock;
 import hram.kvarta.R;
+import hram.kvarta.activity.LoginActivity;
+import hram.kvarta.activity.MainActivity;
+import hram.kvarta.data.Account;
 import hram.kvarta.di.Injector;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.SocketPolicy;
 import okio.Buffer;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -42,7 +42,6 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.action.ViewActions.pressMenuKey;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.times;
@@ -53,6 +52,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static hram.kvarta.espresso.CustomViewActions.numberPickerScrollDown;
 import static hram.kvarta.espresso.CustomViewActions.numberPickerScrollUp;
 import static hram.kvarta.espresso.CustomViewMatchers.isEmptyEditText;
 import static hram.kvarta.espresso.CustomViewMatchers.numberPickerHasValue;
@@ -69,10 +69,6 @@ import static org.hamcrest.Matchers.notNullValue;
 @LargeTest
 public class MainActivityMockTest {
 
-    SharedPreferences mPreferences;
-    Account mAccount;
-
-
     @Rule
     public final MockWebServer mServer = new MockWebServer();
 
@@ -87,14 +83,13 @@ public class MainActivityMockTest {
 
         Injector.init(new NetworkModuleMock(getContext(), mServer));
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mAccount = new Account.Builder()
+        Account account = new Account.Builder()
                 .accountId(BuildConfig.accountid)
                 .tsgId(BuildConfig.tsgid)
                 .password(BuildConfig.password)
                 .demo(false)
                 .build(getContext());
-        assertThat(mAccount, is(notNullValue()));
+        assertThat(account, is(notNullValue()));
     }
 
     @After
@@ -110,7 +105,7 @@ public class MainActivityMockTest {
 
     private void launchActivity() throws InterruptedException {
         rule.launchActivity(createIntent(true));
-        Thread.sleep(300);
+        Thread.sleep(1000);
     }
 
     /**
@@ -154,14 +149,11 @@ public class MainActivityMockTest {
             mServer.enqueue(getResponse("voda_action=tenant.txt"));
 
             Intents.init();
-            rule.launchActivity(createIntent(true));
+            launchActivity();
             intended(hasComponent(MainActivity.class.getName()));
             intended(hasComponent(LoginActivity.class.getName()), times(0));
 
             assertThat(mServer.getRequestCount(), is(5));
-
-            // TODO тут почему то без задержки не успевает отрисоваться
-            Thread.sleep(100);
 
             onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
             onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
@@ -270,7 +262,7 @@ public class MainActivityMockTest {
     }
 
     /**
-     * При повороте экрана состояние не должно меняться
+     * При повороте экрана состояние не должно меняться. Новые значения тоже сохраняются.
      *
      * @throws Exception
      */
@@ -282,14 +274,26 @@ public class MainActivityMockTest {
         onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
         onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
         onView(withId(R.id.action_save)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
 
         onView(isRoot()).perform(orientationLandscape());
 
         onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
         onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
         onView(withId(R.id.action_save)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
 
         onView(withId(R.id.numberPickerH1)).perform(numberPickerScrollUp());
+        onView(withId(R.id.numberPickerH2)).perform(numberPickerScrollUp());
+        onView(withId(R.id.numberPickerH3)).perform(numberPickerScrollUp());
+        onView(withId(R.id.numberPickerH4)).perform(numberPickerScrollUp());
+        onView(withId(R.id.numberPickerH5)).perform(numberPickerScrollUp());
+
+        onView(withId(R.id.numberPickerC1)).perform(numberPickerScrollDown());
+        onView(withId(R.id.numberPickerC2)).perform(numberPickerScrollDown());
+        onView(withId(R.id.numberPickerC3)).perform(numberPickerScrollDown());
+        onView(withId(R.id.numberPickerC4)).perform(numberPickerScrollDown());
+        onView(withId(R.id.numberPickerC5)).perform(numberPickerScrollDown());
 
         onView(withId(R.id.action_save)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
@@ -298,6 +302,7 @@ public class MainActivityMockTest {
         onView(withId(R.id.tvAddress)).check(matches(withText(Constants.TEST_ADDR)));
         onView(withId(R.id.tvUserInfo)).check(matches(withText(Constants.TEST_NAME)));
         onView(withId(R.id.action_save)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        checkValues(getValues(Constants.VALUES_ID_HOT_UP), getValues(Constants.VALUES_ID_COLD_DOWN));
     }
 
     /**
@@ -328,9 +333,14 @@ public class MainActivityMockTest {
             onView(withId(R.id.accountid)).check(matches(isEmptyEditText()));
             onView(withId(R.id.password)).check(matches(isEmptyEditText()));
 
-            onView(isRoot()).perform(pressBack());
+            try {
+                onView(isRoot()).perform(pressBack());
+                Assert.fail();
+            } catch (NoActivityResumedException e) {
+                // do nothing
+            }
 
-            onView(withId(R.id.tvAddress)).check(doesNotExist());
+            //onView(withId(R.id.tvAddress)).check(doesNotExist());
         } finally {
             Intents.release();
         }
@@ -424,6 +434,63 @@ public class MainActivityMockTest {
         checkValues(getValues(Constants.VALUES_ID_HOT_DЕМО), getValues(Constants.VALUES_ID_COLD_DЕМО));
 
         assertThat(mServer.getRequestCount(), is(2));
+    }
+
+    /**
+     * В случае сетевой ошибки на главном экране отображается сообщение
+     * "Не удалось получить данные. Повторите попытку позже." и кнопка "Обновить"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNetworkError() throws Exception {
+        try {
+            mServer.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE));
+
+            Intents.init();
+            launchActivity();
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()), times(0));
+
+            onView(withId(R.id.layout_network_error)).check(matches(isDisplayed()));
+            onView(withText(R.string.error_try_again)).check(matches(isDisplayed()));
+
+            assertThat(mServer.getRequestCount(), is(1));
+        } finally {
+            Intents.release();
+        }
+    }
+
+    /**
+     * В случае сетевой ошибки на главном экране по клику на кнопку "Обновить" происходит запрос данных с сервера.
+     * В случае успеха отображаются данные.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testTryAgain() throws Exception {
+        try {
+            mServer.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE));
+            mServer.enqueue(getResponse("voda_action=tenant.txt"));
+
+            Intents.init();
+            launchActivity();
+            intended(hasComponent(MainActivity.class.getName()));
+            intended(hasComponent(LoginActivity.class.getName()), times(0));
+
+            onView(withId(R.id.layout_network_error)).check(matches(isDisplayed()));
+            onView(withText(R.string.error_try_again)).check(matches(isDisplayed()));
+
+            assertThat(mServer.getRequestCount(), is(1));
+
+            onView(withId(R.id.button_try_again)).perform(click());
+            Thread.sleep(300);
+
+            checkValues(getValues(Constants.VALUES_ID_HOT), getValues(Constants.VALUES_ID_COLD));
+            assertThat(mServer.getRequestCount(), is(2));
+        } finally {
+            Intents.release();
+        }
     }
 
     private MockResponse getResponse(String fileName) throws IOException {

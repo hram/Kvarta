@@ -7,10 +7,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
-import com.squareup.okhttp.mockwebserver.RecordedRequest;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,6 +20,9 @@ import java.net.MalformedURLException;
 import hram.kvarta.data.Account;
 import hram.kvarta.di.Injector;
 import hram.kvarta.network.AccountManager;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import okio.Buffer;
 
 import static android.support.test.espresso.matcher.ViewMatchers.assertThat;

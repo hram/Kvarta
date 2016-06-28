@@ -7,12 +7,26 @@
         <item>0</item>
         <item>0</item>
     </integer-array>
+    <integer-array name="hotValuesUp">
+        <item>5</item>
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>1</item>
+    </integer-array>
     <integer-array name="coldValues">
         <item>1</item>
         <item>2</item>
         <item>2</item>
         <item>0</item>
         <item>0</item>
+    </integer-array>
+    <integer-array name="coldValuesDown">
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>9</item>
+        <item>9</item>
     </integer-array>
     <integer-array name="hotValuesDemo">
         <item>7</item>

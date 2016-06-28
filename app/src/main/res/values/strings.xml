@@ -52,4 +52,5 @@
     <string name="camera_open_error">Ошибка включения фонарика</string>
     <string name="camera_close_error">Ошибка отключения фонарика</string>
     <string name="action_sign_in_demo">Демо</string>
+    <string name="error_try_again">Не удалось получить данные. Повторите попытку позже.</string>
 </resources>

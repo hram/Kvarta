@@ -1,8 +1,6 @@
 package hram.kvarta;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -28,9 +26,7 @@ import static org.hamcrest.Matchers.notNullValue;
 @LargeTest
 public class AccountManagerTest {
 
-    SharedPreferences mPreferences;
-    Account mAccount;
-    AccountManager mAccountManager;
+    private AccountManager mAccountManager;
 
     /**
      * @return The current context.
@@ -45,9 +41,8 @@ public class AccountManagerTest {
         assertThat(InstrumentationRegistry.getContext(), is(notNullValue()));
         assertThat(InstrumentationRegistry.getTargetContext(), is(notNullValue()));
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        mAccount = new Account(getContext());
-        mAccount.reset();
+        Account account = new Account(getContext());
+        account.reset();
 
         mAccountManager = new AccountManager();
         assertThat(mAccountManager, is(notNullValue()));
