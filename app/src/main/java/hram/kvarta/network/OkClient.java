@@ -1,6 +1,8 @@
 package hram.kvarta.network;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import java.net.CookieManager;
 import java.util.concurrent.TimeUnit;
@@ -8,12 +10,14 @@ import java.util.concurrent.TimeUnit;
 import hram.kvarta.BuildConfig;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author Evgeny Hramov
  */
 public class OkClient {
+
+    private OkClient() {
+    }
 
     public static final OkHttpClient CLIENT;
 
@@ -26,15 +30,14 @@ public class OkClient {
                 .cookieJar(new JavaNetCookieJar(CookieManager.getDefault()));
 
         if (BuildConfig.DEBUG) {
-            final HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            builder.addNetworkInterceptor(logging);
+            builder.addNetworkInterceptor(new StethoInterceptor());
         }
 
         CLIENT = builder.build();
     }
 
-    public static OkHttpClient create(Context context) {
+    @NonNull
+    public static OkHttpClient create() {
         return CLIENT;
     }
 }

@@ -20,6 +20,7 @@ import okhttp3.mockwebserver.MockWebServer;
 public class NetworkModuleMock {
 
     private final Context mContext;
+
     private final MockWebServer mServer;
 
     public NetworkModuleMock(Context context, MockWebServer server) {
@@ -31,7 +32,7 @@ public class NetworkModuleMock {
     @Singleton
     @SuppressWarnings("unused")
     OkHttpClient provideClient() {
-        return OkClient.create(mContext);
+        return OkClient.create();
     }
 
     @Provides

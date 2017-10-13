@@ -12,6 +12,10 @@ import timber.log.Timber;
  * @author Evgeny Khramov
  */
 public class AndroidComponentUtil {
+
+    private AndroidComponentUtil() {
+    }
+
     public static void toggleComponent(Context context, Class componentClass, boolean enable) {
         if (BuildConfig.DEBUG) {
             Timber.i((enable ? "Enabling " : "Disabling ") + componentClass.getSimpleName());

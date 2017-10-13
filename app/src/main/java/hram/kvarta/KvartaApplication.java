@@ -3,6 +3,7 @@ package hram.kvarta;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -25,6 +26,7 @@ public class KvartaApplication extends Application {
         super.onCreate();
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+            Stetho.initializeWithDefaults(this);
         }
         if (BuildConfig.crashlyticsEnabled) {
             Fabric.with(this, new Crashlytics());

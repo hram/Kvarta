@@ -133,9 +133,9 @@ public class PersistentCookieStore implements CookieStore {
     @Override
     public List<HttpCookie> getCookies() {
         ArrayList<HttpCookie> ret = new ArrayList<>();
-        for (String key : cookies.keySet())
+        for (String key : cookies.keySet()) {
             ret.addAll(cookies.get(key).values());
-
+        }
         return ret;
     }
 

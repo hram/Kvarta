@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import hram.kvarta.BuildConfig;
 import hram.kvarta.network.AccountManager;
 import hram.kvarta.network.OkClient;
 import hram.kvarta.network.ValuesManager;
@@ -27,12 +28,15 @@ public class NetworkModule {
     @Provides
     @Singleton
     OkHttpClient provideClient() {
-        return OkClient.create(mContext);
+        return OkClient.create();
     }
 
     @Provides
     @Singleton
     HttpUrl provideUrl() {
-        return new HttpUrl.Builder().scheme("http").host("www2.kvarta-c.ru").build();
+        return new HttpUrl.Builder()
+                .scheme("http")
+                .host(BuildConfig.HOST)
+                .build();
     }
 }
