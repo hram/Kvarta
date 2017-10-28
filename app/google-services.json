@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "913911420460",
+    "firebase_url": "https://kvarta-f1677.firebaseio.com",
+    "project_id": "kvarta-f1677",
+    "storage_bucket": "kvarta-f1677.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913911420460:android:59efe989b24137b3",
+        "android_client_info": {
+          "package_name": "hram.kvarta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "913911420460-fqdqbaj16ot54qpmcsplppak2vvsicjo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsqgP3FjXovZRP5Cs2O9eKEF_lIshoNVM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
