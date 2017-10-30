@@ -204,10 +204,6 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
         mLayoutUsetInfo.setVisibility(mSettings.enableUserInfo().get() ? View.VISIBLE : View.GONE);
         mAlarmManager.setAlarm();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mFlash.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -273,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements NumberPicker.OnVa
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showLayout(int layoutId) {
-        if(mShowedLayout == layoutId){
+        if (mShowedLayout == layoutId) {
             return;
         }
 

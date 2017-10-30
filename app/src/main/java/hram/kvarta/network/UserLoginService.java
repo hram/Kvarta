@@ -15,6 +15,7 @@ import hram.kvarta.data.Account;
 import hram.kvarta.events.UserLoginEndedEvent;
 import hram.kvarta.events.UserLoginErrorEvent;
 import hram.kvarta.events.UserLoginStartedEvent;
+import hram.kvarta.util.CrashlyticsUtil;
 import timber.log.Timber;
 
 /**
@@ -71,7 +72,8 @@ public class UserLoginService extends IntentService {
             return;
         }
 
-        if(!new AccountManager().logIn(args.tsgID().get(), args.accountID().get(), args.password().get(), args.demo().get())){
+        if (!new AccountManager().logIn(args.tsgID().get(), args.accountID().get(), args.password().get(), args.demo().get())) {
+            CrashlyticsUtil.logLogin(CrashlyticsUtil.LOGIN_PASSWORD, false);
             EventBus.getDefault().post(new UserLoginErrorEvent());
             return;
         }
@@ -83,6 +85,7 @@ public class UserLoginService extends IntentService {
                 .demo(args.demo().get())
                 .build(getApplicationContext());
 
+        CrashlyticsUtil.logLogin(CrashlyticsUtil.LOGIN_PASSWORD, true);
         EventBus.getDefault().post(new UserLoginEndedEvent());
     }
 

@@ -13,7 +13,8 @@
     <RelativeLayout
         android:id="@+id/layout_progress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:visibility="gone">
 
         <ProgressBar
             android:id="@+id/login_progress"
@@ -29,7 +30,8 @@
         android:id="@+id/layout_network_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/errorText"
@@ -59,7 +61,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/layout_usetInfo"

@@ -12,6 +12,7 @@ import droidkit.content.TypedPrefs;
 import hram.kvarta.data.Account;
 import hram.kvarta.data.Settings;
 import hram.kvarta.events.LoadDataEndedEvent;
+import hram.kvarta.util.CrashlyticsUtil;
 import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -153,12 +154,16 @@ public class ValuesManager extends BaseManager {
             item = links.get(5);
             account.setLastTime(item.text());
 
+            CrashlyticsUtil.getValues();
             setValues(links);
         } catch (SocketTimeoutException e) {
+            CrashlyticsUtil.logException(e);
             throw e;
         } catch (IOException e) {
+            CrashlyticsUtil.logException(e);
             return false;
         } catch (IndexOutOfBoundsException iobe) {
+            CrashlyticsUtil.logException(iobe);
             // когда вернулись не те данные
             return false;
         }
@@ -215,11 +220,13 @@ public class ValuesManager extends BaseManager {
             item = links.get(5);
             account.setLastTime(item.text());
 
+            CrashlyticsUtil.saveValues();
             setValues(links);
-
         } catch (IOException e) {
+            CrashlyticsUtil.logException(e);
             return false;
         } catch (IndexOutOfBoundsException iobe) {
+            CrashlyticsUtil.logException(iobe);
             // когда вернулись не те данные
             return false;
         }
